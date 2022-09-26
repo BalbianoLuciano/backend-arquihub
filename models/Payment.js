@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 
-const UserSchema = new mongoose.Schema({
+const PaymentSchema = new mongoose.Schema({
     userId: {
         type: Number,
     },
@@ -10,4 +10,4 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model("payments", UserSchema)
+module.exports = mongoose.model("payments", PaymentSchema)

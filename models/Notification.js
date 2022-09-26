@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 
-const UserSchema = new mongoose.Schema({
+const NotificationSchema = new mongoose.Schema({
     notification_reciever: {
         type: Number,
     },
@@ -21,4 +21,4 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model("notifications", UserSchema)
+module.exports = mongoose.model("notifications", NotificationSchema)

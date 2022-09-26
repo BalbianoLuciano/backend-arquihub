@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 
-const UserSchema = new mongoose.Schema({
+const ReviewSchema = new mongoose.Schema({
     postId: {
         type: String,
     },
@@ -25,4 +25,4 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model("reviews", UserSchema)
+module.exports = mongoose.model("reviews", ReviewSchema)

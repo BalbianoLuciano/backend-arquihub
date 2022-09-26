@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 
-const UserSchema = new mongoose.Schema({
+const PostSchema = new mongoose.Schema({
     title: {
         type: String,
     },
@@ -35,4 +35,4 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model("posts", UserSchema)
+module.exports = mongoose.model("posts", PostSchema)

@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
     },
     nickname: {
         type: String,
+        unique: true,
     },
     email: {
         type: String,
@@ -40,3 +41,6 @@ const UserSchema = new mongoose.Schema({
 })
 
 module.exports = mongoose.model("users", UserSchema)
+
+
+//este espacio

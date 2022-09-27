@@ -16,7 +16,7 @@ const PostSchema = new mongoose.Schema({
     createdBy: {
         type: String,
     },
-    posted_by: {
+    project_type: {
         type: String
     },
     mts2: {
@@ -26,6 +26,9 @@ const PostSchema = new mongoose.Schema({
         type: Number
     },
     year: {
+        type: Number
+    },
+    bathrooms: {
         type: Number
     },
     authors: [{

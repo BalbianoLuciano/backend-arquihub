@@ -9,27 +9,33 @@ const PostSchema = new mongoose.Schema({
         type: String,
     },
     visibility: {
-        type: ["private", "public"],
+        type: String,
+        enum: ["private", "public"],
+        default: "public"
     },
     createdBy: {
         type: String,
     },
-    posted_by:{
+    posted_by: {
         type: String
     },
-    project:{
-        mts2:{type:Number},
-        rooms:{type:Number},
-        year:{type:Number}
+    mts2: {
+        type: Number
     },
-    authors:[{
+    rooms: {
+        type: Number
+    },
+    year: {
+        type: Number
+    },
+    authors: [{
         type: String
     }],
-    additional_data:[{
+    additional_data: [{
         type: String
     }],
-    rating:{
-        type:Number
+    rating: {
+        type: Number
     }
 }, {
     timestamps: true

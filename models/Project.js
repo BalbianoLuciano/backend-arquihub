@@ -9,7 +9,7 @@ const ProjectSchema = new mongoose.Schema({
         type: String,
     },
     visibility: {
-        type: ["private", "public"],
+        type: Boolean,
     },
     createdBy: {
         type: String,

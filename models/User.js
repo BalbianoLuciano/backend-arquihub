@@ -20,18 +20,23 @@ const UserSchema = new mongoose.Schema({
         type: String,
     },
     type: {
-        type: ["user", "admin", "guest", "member"],
-        default: "guest"
+        type: String,
+        enum: ["user", "admin", "superadmin", "member"],
+        default: "user"
     },
     projects: [{
         type: String
     }],
-    favourites:[{
+    favourites: [{
         type: String
     }],
-    status:["active", "banned", "inactive"]
+    status: {
+        type: String,
+        enum: ["active", "banned", "inactive"],
+        default: "active"
+    }
 }, {
-    timestamps: false
+    timestamps: true
 })
 
 module.exports = mongoose.model("users", UserSchema)

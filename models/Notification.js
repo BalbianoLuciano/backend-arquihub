@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 
 const NotificationSchema = new mongoose.Schema({
-    notification_reciever: {
+    recieverId: {
         type: Number,
     },
     type:{
@@ -12,7 +12,7 @@ const NotificationSchema = new mongoose.Schema({
         type: String,
     },
     body:{
-        type: Text
+        type: String
     },
     userId:{
         type: Number

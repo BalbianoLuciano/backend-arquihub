@@ -1,12 +1,10 @@
 const { updateModel } = require("../models")
 const { projectModel } = require("../models")
 
-const getUpdate = async (req, res) => {
+const getUpdates = async (req, res) => {
     try {
-        const { id }= req.params;
-        const idProject = await projectModel.findById(id)        
         const allUpdate = await updateModel.find({})
-        res.send(idProject)
+        res.send(allUpdate)
 
     } catch (error) {
         console.log(error)
@@ -17,7 +15,7 @@ const postUpdate = async (req, res) => { //llegan title, description por body
     try {  
         const { id } = req.params;      
         const { body } = req;
-        const idProject = await projectModel.findById(id)
+        //await projectModel.findById(id)
         const newUpdate = await updateModel.create(body)
         res.send(newUpdate)
 
@@ -29,11 +27,10 @@ const postUpdate = async (req, res) => { //llegan title, description por body
 const putUpdate = async (req, res) => { //llegan projectId por params y title y description por body
     try {
         const { id } = req.params;
-        const { body } = req;
-        console.log(body)
-        const newUpdate = body
-        await updateModel.findOneAndUpdate(id,  body )
-        res.send(newUpdate)
+        const { title, comments } = req.body;
+        //console.log(body)
+        await updateModel.findByIdAndUpdate(id, {title, comments})
+        res.send("File Update")
 
     } catch (error) {
         console.log(error)
@@ -62,4 +59,4 @@ const putUpdate = async (req, res) => { //llegan projectId por params y title y 
 // }
 
 
-module.exports = { getUpdate, postUpdate, putUpdate }
+module.exports = { getUpdates, postUpdate, putUpdate }

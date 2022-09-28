@@ -12,11 +12,11 @@ const getPosts = async (req, res) => {
 
 const createPost = async (req, res) => {
     try {
-        const { title, 
-            description, 
-            visibility, 
-            createdBy, 
-            project_type, 
+        const { title,
+            description,
+            visibility,
+            createdBy,
+            project_type,
             mts2,
             rooms,
             year,
@@ -26,16 +26,16 @@ const createPost = async (req, res) => {
             rating
         } = req.body;
 
-    if(!title|| !description || !createdBy || !project_type ){
-        return res.status(400).send("Missing required parameters")
-    }
-    
+        if (!title || !description || !createdBy || !project_type) {
+            return res.status(400).send("Missing required parameters")
+        }
+
         const newPost = {
-            title, 
-            description, 
-            visibility, 
-            createdBy, 
-            project_type, 
+            title,
+            description,
+            visibility,
+            createdBy,
+            project_type,
             mts2,
             rooms,
             year,
@@ -56,12 +56,12 @@ const createPost = async (req, res) => {
 const updatePost = async (req, res) => {
     try {
         const { id } = req.params;
-        const { 
-            title, 
-            description, 
-            visibility, 
-            createdBy, 
-            project_type, 
+        const {
+            title,
+            description,
+            visibility,
+            createdBy,
+            project_type,
             mts2,
             rooms,
             year,
@@ -70,21 +70,22 @@ const updatePost = async (req, res) => {
             additional_data,
             rating } = req.body;
 
-        const updatePost = { 
-            title, 
-            description, 
-            visibility, 
-            createdBy, 
-            project_type, 
+        const updatePost = {
+            title,
+            description,
+            visibility,
+            createdBy,
+            project_type,
             mts2,
             rooms,
             year,
             bathrooms,
             authors,
             additional_data,
-            rating}
+            rating
+        }
 
-        await postModel.findOneAndUpdate(id,  updatePost )
+        await postModel.findOneAndUpdate(id, updatePost)
         res.send(updatePost)
 
     } catch (error) {
@@ -95,7 +96,7 @@ const updatePost = async (req, res) => {
 const deletePost = async (req, res) => {
     try {
         const { id } = req.params;
-       await postModel.deleteOne({_id:id})
+        await postModel.deleteOne({ _id: id })
         res.send("Post deleted")
     } catch (error) {
         res.status(400).send("Cant delete this post")
@@ -106,7 +107,7 @@ const deletePost = async (req, res) => {
 const getPost = async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await postModel.findOne({_id:id})
+        const post = await postModel.findOne({ _id: id })
         res.send(post)
     } catch (error) {
         console.log(error)

@@ -1,10 +1,11 @@
 const express = require("express")
 const router = express.Router();
-const { postModel } = require("../models")
+const { getPosts, createPost, updatePost, deletePost, getPost} = require("../controllers/post")
 
-router.get("/")
-router.post("/")
-router.put("/")
-router.delete("/")
+router.get("/", getPosts)
+router.get("/:id", getPost)
+router.post("/", createPost)
+router.put("/:id", updatePost)
+router.delete("/:id", deletePost)
 
 module.exports = router;

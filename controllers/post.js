@@ -57,4 +57,4 @@ const getPost = async (req, res) => {
 }
 
 
-module.exports = { getPosts, createPost, updatePost, deletePost, getPost }
+module.exports = { getPosts, createPost, updatePost, deletePost, getPost } 

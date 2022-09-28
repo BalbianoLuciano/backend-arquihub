@@ -12,11 +12,11 @@ const getReviews = async (req, res) => {
 
 const createReview = async (req, res) => {
     try {
-        const { value, comment, post_id} = req.body;
-        if(!value, comment, post_id){
+        const { value, comment, post_id, user_id} = req.body;
+        if(!value, comment, post_id,user_id){
             return res.status(400).send("Missing required parameters")
         }
-        const newReview = {value, comment, post_id} 
+        const newReview = {value, comment, post_id, user_id} 
         await reviewModel.create(newReview)
         res.status(200).send(newReview)
 

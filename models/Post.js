@@ -55,4 +55,7 @@ PostSchema.statics.findAllData= function (){
     ])
     return joinReviews 
 };
+
+
+
 module.exports = mongoose.model("posts", PostSchema)

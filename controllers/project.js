@@ -77,7 +77,7 @@ const deleteProject = async (req, res) => {
 const getProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const Project = await ProjectModel.findOne({ _id: id });
+    const Project = await projectModel.findOne({ _id: id });
     res.send(Project);
   } catch (error) {
     console.log(error);

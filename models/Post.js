@@ -1,6 +1,4 @@
 const mongoose = require("mongoose")
-
-
 const PostSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -16,7 +14,7 @@ const PostSchema = new mongoose.Schema({
     createdBy: {
         type: String,
     },
-    posted_by: {
+    project_type: {
         type: String
     },
     mts2: {
@@ -26,6 +24,9 @@ const PostSchema = new mongoose.Schema({
         type: Number
     },
     year: {
+        type: Number
+    },
+    bathrooms: {
         type: Number
     },
     authors: [{
@@ -40,5 +41,21 @@ const PostSchema = new mongoose.Schema({
 }, {
     timestamps: true
 })
+
+PostSchema.statics.findAllData= function (){
+    const joinReviews = this.aggregate([
+        {
+            $lookup:{
+                from: "reviews",
+                localField:"_id",
+                foreignField:"postId",
+                as:"reviews"
+            }
+        },
+    ])
+    return joinReviews 
+};
+
+
 
 module.exports = mongoose.model("posts", PostSchema)

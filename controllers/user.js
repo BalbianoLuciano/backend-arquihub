@@ -2,53 +2,54 @@ const { usersModel } = require("../models")
 
 const getUsers = async (req, res) => {
     try {
-        const allusers = await usersModel.find({})
-        res.send(allPosts)
+        const allUsers = await usersModel.find({})
+        console.log(allUsers)
+        res.send(allUsers)
 
     } catch (error) {
         console.log(error)
     }
 }
 
-const createPost = async (req, res) => {
+const createUser = async (req, res) => {
     try {
         const { body } = req;
-        const newPost = await postModel.create(body)
-        res.send(newPost)
+        const newUser = await usersModel.create(body)
+        res.send(newUser)
     } catch (error) {
         console.log(error)
     }
 }
 
-const updatePost = async (req, res) => {
+const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { body } = req;
         console.log(body)
-        const newPost = body
-        await postModel.findOneAndUpdate(id,  body )
-        res.send(newPost)
+        const editedUser = body
+        await usersModel.findOneAndUpdate(id,  body )
+        res.send(editedUser)
 
     } catch (error) {
         console.log(error)
     }
 }
 
-const deletePost = async (req, res) => {
+const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-       await postModel.deleteOne({_id:id})
-        res.send("Post deleted")
+       await usersModel.deleteOne({_id:id})
+        res.send("user deleted")
     } catch (error) {
         console.log(error)
     }
 }
 
 
-const getPost = async (req, res) => {
+const getUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await postModel.findOne({_id:id})
+        const post = await usersModel.findOne({_id:id})
         res.send(post)
     } catch (error) {
         console.log(error)
@@ -56,4 +57,4 @@ const getPost = async (req, res) => {
 }
 
 
-module.exports = { getPosts, createPost, updatePost, deletePost, getPost }
+module.exports = { getUsers, createUser, updateUser, deleteUser, getUser }

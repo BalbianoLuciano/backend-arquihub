@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
     },
     nickname: {
         type: String,
+        unique: true,
     },
     email: {
         type: String,
@@ -39,7 +40,17 @@ const UserSchema = new mongoose.Schema({
     timestamps: true
 })
 
+
+UserSchema.statics.encryptPassword=async(password)=>{
+    const salt = await bcrypt.genSalt(10)
+    return await bcrypt.hash(password, salt)
+    }
+    
+    
+    UserSchema.statics.comparePassword=async(password, recievedPassword)=>{
+        return await bcrypt.compare(password, recievedPassword)
+    }  
+
+    
 module.exports = mongoose.model("users", UserSchema)
 
-
-//este espacio

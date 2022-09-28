@@ -1,27 +1,29 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-
-const ProjectSchema = new mongoose.Schema({
+const ProjectSchema = new mongoose.Schema(
+  {
     title: {
-        type: String,
+      type: String,
     },
     description: {
-        type: String,
+      type: String,
     },
     visibility: {
-        type: Boolean,
+      type: Boolean,
     },
-    createdBy: {
-        type: String,
+    created_by: {
+      type: String,
     },
     project_file: {
-        type: String,
+      type: String,
     },
-    users:[{
-        type: String
-    }]
-}, {
-    timestamps: true
-})
+    project_type: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model("projects", ProjectSchema)
+module.exports = mongoose.model("projects", ProjectSchema);

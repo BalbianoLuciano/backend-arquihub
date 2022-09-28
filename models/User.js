@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
     },
     nickname: {
         type: String,
+        unique: true,
     },
     email: {
         type: String,
@@ -52,3 +53,4 @@ UserSchema.statics.encryptPassword=async(password)=>{
 
     
 module.exports = mongoose.model("users", UserSchema)
+

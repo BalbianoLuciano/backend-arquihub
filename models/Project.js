@@ -1,27 +1,38 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-
-const ProjectSchema = new mongoose.Schema({
+const ProjectSchema = new mongoose.Schema(
+  {
     title: {
-        type: String,
+      type: String,
     },
     description: {
-        type: String,
+      type: String,
     },
     visibility: {
-        type: Boolean,
+      type: Boolean,
     },
-    createdBy: {
-        type: String,
-    },
-    project_file: {
-        type: String,
+    created_by: {
+        type: mongoose.Types.ObjectId,
     },
     users:[{
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users"
     }]
 }, {
     timestamps: true
 })
 
+ProjectSchema.statics.findAllData = function () {
+    const joinReviews = this.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "created_by",
+          foreignField: "_id",
+          as: "created_by_data",
+        },
+      },
+    ]);
+    return joinReviews;
+  };
 module.exports = mongoose.model("projects", ProjectSchema)

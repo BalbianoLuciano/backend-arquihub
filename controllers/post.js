@@ -2,7 +2,8 @@ const { postModel } = require("../models")
 
 const getPosts = async (req, res) => {
     try {
-        const allPosts = await postModel.find({})
+        console.log("hola")
+        const allPosts = await postModel.findAllData({})
         res.send(allPosts)
 
     } catch (error) {

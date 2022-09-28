@@ -1,4 +1,4 @@
-const express = require("express")
+const express = require("express");
 const router = express.Router();
 const { getProjects, createProject, updateProject, deleteProject, getProject} = require("../controllers/project")
 

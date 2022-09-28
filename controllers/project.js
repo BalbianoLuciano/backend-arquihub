@@ -47,10 +47,12 @@ const createProject = async (req, res) => {
   }
 };
 
+
 const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
     const { body } = req;
+
 
     const newProject = body;
     await projectModel.findOneAndUpdate(id, body);
@@ -60,10 +62,12 @@ const updateProject = async (req, res) => {
   }
 };
 
+
 const deleteProject = async (req, res) => {
   try {
     const { id } = req.params;
     await projectModel.deleteOne({ _id: id });
+
     res.send("Project deleted");
   } catch (error) {
     console.log(error);

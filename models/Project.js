@@ -1,15 +1,15 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-
-const ProjectSchema = new mongoose.Schema({
+const ProjectSchema = new mongoose.Schema(
+  {
     title: {
-        type: String,
+      type: String,
     },
     description: {
-        type: String,
+      type: String,
     },
     visibility: {
-        type: Boolean,
+      type: Boolean,
     },
     created_by: {
         type: mongoose.Types.ObjectId,

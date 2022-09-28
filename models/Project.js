@@ -12,18 +12,27 @@ const ProjectSchema = new mongoose.Schema(
       type: Boolean,
     },
     created_by: {
-      type: String,
+        type: mongoose.Types.ObjectId,
     },
-    project_file: {
-      type: String,
-    },
-    project_type: {
-      type: String,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+    users:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users"
+    }]
+}, {
+    timestamps: true
+})
 
-module.exports = mongoose.model("projects", ProjectSchema);
+ProjectSchema.statics.findAllData = function () {
+    const joinReviews = this.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "created_by",
+          foreignField: "_id",
+          as: "created_by_data",
+        },
+      },
+    ]);
+    return joinReviews;
+  };
+module.exports = mongoose.model("projects", ProjectSchema)

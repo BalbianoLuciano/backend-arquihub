@@ -49,7 +49,7 @@ const deleteUser = async (req, res) => {
 const getUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await usersModel.findOne({_id:id})
+        const post = await usersModel.findOne({_id:id}).populate("projects")
         res.send(post)
     } catch (error) {
         console.log(error)

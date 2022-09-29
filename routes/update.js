@@ -1,11 +1,10 @@
 const express = require("express")
 const router = express.Router();
-const { getUpdates, postUpdate, putUpdate} = require("../controllers/update")
+const { getUpdates, createUpdate, putUpdate} = require("../controllers/update")
 
 router.get("/", getUpdates)
-//router.get("/:id", getPost)
-router.post("/", postUpdate)
+router.post("/", createUpdate)
 router.put("/:id", putUpdate)
-//router.delete("/:id", deletePost)
+
 
 module.exports = router;

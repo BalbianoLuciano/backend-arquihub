@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongooseDelete = require("mongoose-delete")
 
 const ReviewSchema = new mongoose.Schema(
   {
@@ -45,5 +46,6 @@ ReviewSchema.statics.findAllData = function () {
   ]);
   return joinReviews;
 };
+ReviewSchema.plugin(mongooseDelete, {overrideMethods: "all"})
 
 module.exports = mongoose.model("reviews", ReviewSchema);

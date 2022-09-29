@@ -1,4 +1,6 @@
 const { postModel,reviewModel} = require("../models")
+const {verifyToken}= require("../middlewares/auth.jwt")
+
 const getPosts = async (req, res) => {
     try {
         const allPosts = await postModel.find({})
@@ -146,4 +148,4 @@ const getPost = async (req, res) => {
 }
 
 
-module.exports = { getPosts, createPost, updatePost, deletePost, getPost }
+module.exports = { getPosts, createPost, updatePost, deletePost, getPost } 

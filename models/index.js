@@ -7,4 +7,4 @@ const models = {
     reviewModel: require("./Review"),
 }
 
-module.exports = models
+module.exports = models 

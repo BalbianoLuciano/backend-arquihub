@@ -23,10 +23,9 @@ const createUser = async (req, res) => {
             name, lastname, nickname, email, password, type, projects,posts,
             favourites, status
         }
-        console.log(newUser) 
-        await usersModel.create(name, lastname, nickname, email, password, type,
-            favourites, status)
-        res.status(200).send(newUser)
+        console.log(name)
+        await usersModel.create(newUser)
+        res.send(newUser)
     } catch (error) {
         res.status(400).send("Failed to create user",error)
     }

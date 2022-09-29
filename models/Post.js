@@ -1,4 +1,6 @@
 const mongoose = require("mongoose")
+const mongooseDelete = require("mongoose-delete")
+
 const PostSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -56,6 +58,6 @@ PostSchema.statics.findAllData= function (){
     return joinReviews 
 };
 
-
+PostSchema.plugin(mongooseDelete, {overrideMethods: "all"})
 
 module.exports = mongoose.model("posts", PostSchema)

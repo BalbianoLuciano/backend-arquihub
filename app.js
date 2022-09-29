@@ -2,7 +2,7 @@ require("dotenv").config()
 const express = require('express')
 const cors = require("cors")
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 const dbConnect = require("./config/mongo")
 const bodyParser = require('body-parser')
 const morgan = require("morgan")

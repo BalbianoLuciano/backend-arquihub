@@ -63,7 +63,7 @@ const logIn = async (req, res) => {
        const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
 
 
-       res.send({token})
+       res.send({token: token})
 
     } catch (error) {
         console.log(error)

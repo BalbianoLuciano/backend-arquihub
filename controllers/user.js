@@ -22,6 +22,7 @@ const createUser = async (req, res) => {
             name, lastname, nickname, email, password, type, projects,
             favourites, status
         }
+        console.log(name)
         await usersModel.create(newUser)
         res.send(newUser)
     } catch (error) {

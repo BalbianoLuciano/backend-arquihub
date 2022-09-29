@@ -2,12 +2,17 @@ require("dotenv").config()
 const express = require('express')
 const cors = require("cors")
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 const dbConnect = require("./config/mongo")
 const bodyParser = require('body-parser')
 const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
+
 app.use(cors())
+
+
+///auth0
+
 
 
 
@@ -17,7 +22,7 @@ app.use(cookieParser());
 app.use(express.static("storage"))
 app.use(morgan('dev'));
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3001'); // update to match the domain you will make the request from
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3001/'); // update to match the domain you will make the request from
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -27,9 +32,9 @@ app.use((req, res, next) => {
 
 
 
- 
+
 const jsonParser = bodyParser.json()
- 
+
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 //LLamando rutas

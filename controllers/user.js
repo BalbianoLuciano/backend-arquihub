@@ -3,45 +3,60 @@ const { usersModel } = require("../models")
 const getUsers = async (req, res) => {
     try {
         const allUsers = await usersModel.find({})
-        console.log(allUsers)
         res.send(allUsers)
-
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Cant find users")
     }
 }
 
 const createUser = async (req, res) => {
     try {
-        const { body } = req;
-        const newUser = await usersModel.create(body)
+        const {
+            name, lastname, nickname, email, password, type, projects,
+            favourites, status
+        } = req.body;
+        if (!name || !lastname || !nickname || !email || !password) {
+            return res.status(400).send("Missing required parameters")
+        }
+        const newUser = {
+            name, lastname, nickname, email, password, type, projects,
+            favourites, status
+        }
+        console.log(name)
+        await usersModel.create(newUser)
         res.send(newUser)
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Failed to create user")
     }
 }
 
 const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const { body } = req;
-        console.log(body)
-        const editedUser = body
-        await usersModel.findOneAndUpdate(id,  body )
+        const {
+            name, lastname, nickname, email, password, type, projects,
+            favourites, status
+        } = req.body;
+
+        const editedUser = {
+            name, lastname, nickname, email, password, type, projects,
+            favourites, status }
+
+        await usersModel.findOneAndUpdate(id, editedUser)
         res.send(editedUser)
 
     } catch (error) {
-        console.log(error)
+         res.status(400).send("Failed to update user")
     }
 }
 
 const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-       await usersModel.deleteOne({_id:id})
+        await usersModel.deleteOne({ _id: id })
         res.send("user deleted")
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Failed to delete user")
     }
 }
 
@@ -49,10 +64,10 @@ const deleteUser = async (req, res) => {
 const getUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await usersModel.findOne({_id:id}).populate("projects")
+        const post = await usersModel.findOne({ _id: id }).populate("projects")
         res.send(post)
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Cant get user")
     }
 }
 

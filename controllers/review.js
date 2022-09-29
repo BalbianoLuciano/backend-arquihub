@@ -6,18 +6,22 @@ const getReviews = async (req, res) => {
         res.status(200).send(allReviews)
 
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Cant find reviews")
     }
 }
 
 const createReview = async (req, res) => {
     try {
-        const { body } = req;
-        const newReview = await reviewModel.create(body)
+        const { value, comment, post_id, user_id} = req.body;
+        if(!value, comment, post_id,user_id){
+            return res.status(400).send("Missing required parameters")
+        }
+        const newReview = {value, comment, post_id, user_id} 
+        await reviewModel.create(newReview)
         res.status(200).send(newReview)
 
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Cant post this review")
     }
 }
 
@@ -25,14 +29,13 @@ const updateReview = async (req, res) => {
     try {
       
         const { id } = req.params;
-        const { body } = req;
-        console.log(body)
-        const newReview = body
-        await reviewModel.findOneAndUpdate(id,  body )
-        res.status(200).send(newReview);
+        const { value, comment, post_id} = req.body;
+        const updateReview = { value, comment, post_id}
+        await reviewModel.findOneAndUpdate(id,  updateReview )
+        res.status(200).send(updateReview);
 
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Cant update this review")
     }
 }
 
@@ -42,7 +45,7 @@ const deleteReview = async (req, res) => {
        await reviewModel.deleteOne({_id:id})
         res.status(200).send("Review deleted")
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Failed to delete this review")
     }
 }
 
@@ -50,10 +53,13 @@ const deleteReview = async (req, res) => {
 const getReview = async (req, res) => {
     try {
         const { id } = req.params;
+        if(id.length < 24){
+            return res.status(400).send("No searchable id")
+        }
         const Review = await reviewModel.findOne({_id:id})
         res.status(200).send(Review)
     } catch (error) {
-        console.log(error)
+        res.status(400).send("Cant get this review")
     }
 }
 

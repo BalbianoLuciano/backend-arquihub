@@ -2,6 +2,15 @@ const mongoose = require("mongoose")
 
 
 const UpdateSchema = new mongoose.Schema({
+    user_id: {
+        type: mongoose.Types.ObjectId
+    },
+    project_id: {
+        type: mongoose.Types.ObjectId
+    },
+    storage_id:{
+        type: mongoose.Types.ObjectId
+    },
     title: {
         type: String
     },
@@ -10,6 +19,37 @@ const UpdateSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true
-})
+});
+
+UpdateSchema.statics.findAllData = function () {
+    const joinUpdate = this.aggregate([
+        {
+            $lookup: {
+                from: "users",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "user"
+            },
+        },
+        {
+            $lookup: {
+                from: "projects",
+                localField: "project_id",
+                foreignField: "_id",
+                as: "project"
+            },
+        },
+        {
+            $lookup: {
+                from: "storages",
+                localField: "storage_id",
+                foreignField: "_id",
+                as: "storage"
+            },
+        },
+    ]);
+    return joinUpdate;
+};
+
 
 module.exports = mongoose.model("updates", UpdateSchema)

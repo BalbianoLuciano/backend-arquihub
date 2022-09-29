@@ -1,4 +1,5 @@
 const { postModel } = require("../models")
+const {verifyToken}= require("../middlewares/auth.jwt")
 
 const getPosts = async (req, res) => {
     try {

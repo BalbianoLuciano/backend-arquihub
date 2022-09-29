@@ -1,5 +1,5 @@
 const models = {
-    storageModel: require("./Storage"),
+    storageModel: require("./storage"),
     usersModel: require("./User"),
     paymentModel: require("./Payment"),
     postModel: require("./Post"),

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const mongooseDelete = require("mongoose-delete")
 
 
 const PaymentSchema = new mongoose.Schema({
@@ -9,5 +10,7 @@ const PaymentSchema = new mongoose.Schema({
 }, {
     timestamps: true
 })
+
+PaymentSchema.plugin(mongooseDelete, {overrideMethods: "all"})
 
 module.exports = mongoose.model("payments", PaymentSchema)

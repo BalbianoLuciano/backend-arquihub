@@ -11,11 +11,14 @@ const PostSchema = new mongoose.Schema({
         enum: ["private", "public"],
         default: "public"
     },
-    createdBy: {
-        type: String,
+    created_by: {
+        type: mongoose.Types.ObjectId,
+    },
+    project_id:{
+        type: mongoose.Types.ObjectId,
     },
     project_type: {
-        type: String
+        type: String,
     },
     mts2: {
         type: Number
@@ -29,8 +32,9 @@ const PostSchema = new mongoose.Schema({
     bathrooms: {
         type: Number
     },
-    authors: [{
-        type: String
+    authors:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users"
     }],
     additional_data: [{
         type: String

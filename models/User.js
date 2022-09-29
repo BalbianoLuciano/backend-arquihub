@@ -29,8 +29,13 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "projects"
     }],
+    posts:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "posts"
+    }],
     favourites: [{
-        type: String
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "favourites_post"
     }],
     status: {
         type: String,

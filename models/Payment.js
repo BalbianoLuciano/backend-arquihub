@@ -2,8 +2,8 @@ const mongoose = require("mongoose")
 
 
 const PaymentSchema = new mongoose.Schema({
-    userId: {
-        type: Number,
+    user_id: {
+        type: mongoose.Types.ObjectId,
     },
 
 }, {

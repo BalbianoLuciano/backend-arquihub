@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const {bcrypt, genSalt, hash, compare} = require("bcryptjs")
+const mongooseDelete = require("mongoose-delete")
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -54,5 +55,7 @@ UserSchema.statics.encryptPassword=async(password)=>{
         return await compare(password, recievedPassword)
     }  
 
+
+UserSchema.plugin(mongooseDelete, {overrideMethods: "all"})
 
 module.exports = mongoose.model("users", UserSchema)

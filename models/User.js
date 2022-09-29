@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-
+const {bcrypt, genSalt, hash, compare} = require("bcryptjs")
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -23,7 +23,8 @@ const UserSchema = new mongoose.Schema({
     type: {
         type: String,
         enum: ["user", "admin", "superadmin", "member"],
-        default: "user"
+        default: "user",
+        required: true
     },
     projects:[{
         type: mongoose.Schema.Types.ObjectId,
@@ -44,13 +45,13 @@ const UserSchema = new mongoose.Schema({
 
 
 UserSchema.statics.encryptPassword=async(password)=>{
-    const salt = await bcrypt.genSalt(10)
-    return await bcrypt.hash(password, salt)
+    const salt = await genSalt(10)
+    return await hash(password, salt)
     }
     
     
     UserSchema.statics.comparePassword=async(password, recievedPassword)=>{
-        return await bcrypt.compare(password, recievedPassword)
+        return await compare(password, recievedPassword)
     }  
 
 

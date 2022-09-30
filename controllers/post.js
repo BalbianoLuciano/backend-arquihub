@@ -47,9 +47,16 @@ const createPost = async (req, res) => {
             rating
         }
         console.log(newPost)
-        await postModel.create(newPost)
-        res.send(newPost)
-
+        const createPost = await postModel.create(newPost)
+        const {_id} = createPost;
+        await authors.forEach(async (e) => {
+            await postModel.updateOne({_id:_id},
+              { $push: { users: e } },
+              { new: true, useFindAndModify: false }
+            );
+          });
+          const newPostF = await postModel.findById(_id)
+          res.status(200).send(newPostF);
     } catch (error) {
         res.status(400).send("Cant post this project")
     }

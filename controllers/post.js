@@ -1,4 +1,4 @@
-const { postModel,reviewModel} = require("../models")
+const { postModel,reviewModel, usersModel} = require("../models")
 const {verifyToken}= require("../middlewares/auth.jwt")
 
 const getPosts = async (req, res) => {
@@ -48,14 +48,21 @@ const createPost = async (req, res) => {
         }
         console.log(newPost)
         const createPost = await postModel.create(newPost)
-        const {_id} = createPost;
-        // await authors.forEach(async (e) => {
-        //     await postModel.updateOne({_id:_id},
-        //       { $push: { users: e } },
-        //       { new: true, useFindAndModify: false }
-        //     );
-        //   });
-          const newPostF = await postModel.findById(_id)
+
+        const {id} = createPost;
+         authors.forEach(async (e) => {
+            console.log(e)
+            await postModel.updateOne({_id:id},
+              { $push: { authors: e.value } },
+              { new: true, useFindAndModify: false }
+            );
+            await usersModel.updateOne({_id:e.value},
+                { $push: { posts: id } },
+                { new: true, useFindAndModify: false }
+              );
+          });
+          const newPostF = await postModel.findById(id)
+
           res.status(200).send(newPostF);
     } catch (err) {
         res.status(400).send({err:err.message})

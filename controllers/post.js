@@ -28,9 +28,9 @@ const createPost = async (req, res) => {
             rating
         } = req.body;
 
-        if (!title || !description || !created_by || !project_type) {
+/*         if (!title || !description || !created_by || !project_type) {
             return res.status(400).send("Missing required parameters")
-        }
+        }  */
 
         const newPost = {
             title,
@@ -51,14 +51,14 @@ const createPost = async (req, res) => {
         const {_id} = createPost;
         await authors.forEach(async (e) => {
             await postModel.updateOne({_id:_id},
-              { $push: { users: e.value } },
+              { $push: { users: e } },
               { new: true, useFindAndModify: false }
             );
           });
           const newPostF = await postModel.findById(_id)
           res.status(200).send(newPostF);
-    } catch (error) {
-        res.status(400).send("Cant post this project")
+    } catch (err) {
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -68,8 +68,8 @@ const updatePost = async (req, res) => {
         const {
             title,
             description,
-            visibility,
             created_by,
+            visibility,
             project_id,
             project_type,
             mts2,
@@ -83,15 +83,12 @@ const updatePost = async (req, res) => {
         const updatePost = {
             title,
             description,
-            visibility,
             project_id,
-            created_by,
             project_type,
             mts2,
             rooms,
             year,
             bathrooms,
-/*             authors, */
             additional_data,
             rating
         }

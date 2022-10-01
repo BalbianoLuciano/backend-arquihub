@@ -29,7 +29,7 @@ const PostSchema = new mongoose.Schema({
         type: Number
     },
     year: {
-        type: Number
+        type: String
     },
     bathrooms: {
         type: Number

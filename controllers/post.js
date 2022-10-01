@@ -28,9 +28,9 @@ const createPost = async (req, res) => {
             rating
         } = req.body;
 
-/*         if (!title || !description || !created_by || !project_type) {
+        if (!title || !description || !project_type) {
             return res.status(400).send("Missing required parameters")
-        }  */
+        }  
 
         const newPost = {
             title,
@@ -49,12 +49,12 @@ const createPost = async (req, res) => {
         console.log(newPost)
         const createPost = await postModel.create(newPost)
         const {_id} = createPost;
-        await authors.forEach(async (e) => {
-            await postModel.updateOne({_id:_id},
-              { $push: { users: e } },
-              { new: true, useFindAndModify: false }
-            );
-          });
+        // await authors.forEach(async (e) => {
+        //     await postModel.updateOne({_id:_id},
+        //       { $push: { users: e } },
+        //       { new: true, useFindAndModify: false }
+        //     );
+        //   });
           const newPostF = await postModel.findById(_id)
           res.status(200).send(newPostF);
     } catch (err) {

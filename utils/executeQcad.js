@@ -1,6 +1,6 @@
 const { spawn } = require('node:child_process');
 
-const bat = spawn('cmd.exe', ['/c', "cd C:\Program Files\QCAD"], );
+const bat = spawn('cmd.exe', ['/c', 'dir "C:\\Program Files\n"']);
 
 bat.stdout.on('data', (data) => {
   console.log(data.toString());

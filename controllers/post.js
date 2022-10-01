@@ -23,6 +23,7 @@ const createPost = async (req, res) => {
             rooms,
             year,
             bathrooms,
+            image,
             authors,
             additional_data,
             rating
@@ -41,6 +42,7 @@ const createPost = async (req, res) => {
             project_id,
             mts2,
             rooms,
+            image,
             year,
             bathrooms,
             additional_data,

@@ -51,7 +51,7 @@ const createPost = async (req, res) => {
         const {_id} = createPost;
         await authors.forEach(async (e) => {
             await postModel.updateOne({_id:_id},
-              { $push: { users: e } },
+              { $push: { users: e.value } },
               { new: true, useFindAndModify: false }
             );
           });
@@ -91,7 +91,7 @@ const updatePost = async (req, res) => {
             rooms,
             year,
             bathrooms,
-            authors,
+/*             authors, */
             additional_data,
             rating
         }
@@ -109,8 +109,8 @@ const deletePost = async (req, res) => {
         const { id } = req.params;
         await postModel.deleteOne({ _id: id })
         res.send("Post deleted")
-    } catch (error) {
-        res.status(400).send("Cant delete this post")
+    } catch (err) {
+        res.status(400).send({err:err.message})
     }
 }
 

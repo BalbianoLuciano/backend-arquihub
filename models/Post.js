@@ -25,11 +25,15 @@ const PostSchema = new mongoose.Schema({
     mts2: {
         type: Number
     },
+    image: [{
+        type: String,
+        default: "https://res.cloudinary.com/dfcd64nhm/image/upload/v1664674482/Arquihub/4e36ead625b16bac653d2b07c7a57005_if3usp.png"
+    }],
     rooms: {
         type: Number
     },
     year: {
-        type: Number
+        type: String
     },
     bathrooms: {
         type: Number

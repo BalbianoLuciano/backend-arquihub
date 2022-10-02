@@ -25,9 +25,9 @@ const PostSchema = new mongoose.Schema({
     mts2: {
         type: Number
     },
-    image: {
+    image: [{
         type: String
-    },
+    }],
     rooms: {
         type: Number
     },

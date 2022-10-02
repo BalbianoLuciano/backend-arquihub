@@ -32,9 +32,6 @@ const createUser = async (req, res) => {
       email,
       password,
       type,
-      projects,
-      posts,
-      favourites,
       status,
     };
     console.log(name);

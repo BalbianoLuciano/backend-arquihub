@@ -18,7 +18,10 @@ const ProjectSchema = new mongoose.Schema(
     users:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "users"
-    }]
+    }],
+    project_file:{
+      type: mongoose.Types.ObjectId,
+    },
 }, {
     timestamps: true
 })

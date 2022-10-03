@@ -1,9 +1,9 @@
-const { postModel } = require("../models")
+const { postModel,reviewModel, usersModel} = require("../models")
 const {verifyToken}= require("../middlewares/auth.jwt")
 
 const getPosts = async (req, res) => {
     try {
-        const allPosts = await postModel.findAllData({})
+        const allPosts = await postModel.find({})
         res.send(allPosts)
 
     } catch (error) {
@@ -16,41 +16,58 @@ const createPost = async (req, res) => {
         const { title,
             description,
             visibility,
-            createdBy,
+            created_by,
             project_type,
             mts2,
+            project_id,
             rooms,
             year,
             bathrooms,
+            image,
             authors,
             additional_data,
             rating
         } = req.body;
 
-        if (!title || !description || !createdBy || !project_type) {
+        if (!title || !description || !project_type) {
             return res.status(400).send("Missing required parameters")
-        }
+        }  
 
         const newPost = {
             title,
             description,
             visibility,
-            createdBy,
+            created_by,
             project_type,
+            project_id,
             mts2,
             rooms,
+            image,
             year,
             bathrooms,
-            authors,
             additional_data,
             rating
         }
         console.log(newPost)
-        await postModel.create(newPost)
-        res.send(newPost)
+        const createPost = await postModel.create(newPost)
 
-    } catch (error) {
-        res.status(400).send("Cant post this project")
+        const {id} = createPost;
+         authors.forEach(async (e) => {
+            console.log(e)
+            await postModel.updateOne({_id:id},
+              { $push: { authors: e.value } },
+              { new: true, useFindAndModify: false }
+            );
+            await usersModel.updateOne({_id:e.value},
+                { $push: { posts: id } },
+                { new: true, useFindAndModify: false }
+              );
+          });
+          const newPostF = await postModel.findById(id)
+
+          res.status(200).send(newPostF);
+    } catch (err) {
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -60,8 +77,9 @@ const updatePost = async (req, res) => {
         const {
             title,
             description,
+            created_by,
             visibility,
-            createdBy,
+            project_id,
             project_type,
             mts2,
             rooms,
@@ -74,14 +92,12 @@ const updatePost = async (req, res) => {
         const updatePost = {
             title,
             description,
-            visibility,
-            createdBy,
+            project_id,
             project_type,
             mts2,
             rooms,
             year,
             bathrooms,
-            authors,
             additional_data,
             rating
         }
@@ -99,8 +115,8 @@ const deletePost = async (req, res) => {
         const { id } = req.params;
         await postModel.deleteOne({ _id: id })
         res.send("Post deleted")
-    } catch (error) {
-        res.status(400).send("Cant delete this post")
+    } catch (err) {
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -108,8 +124,37 @@ const deletePost = async (req, res) => {
 const getPost = async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await postModel.findOne({ _id: id })
-        res.send(post)
+        const allPosts = await postModel.aggregate([
+            {
+              $lookup: {
+                from: "projects",
+                localField: "project_id",
+                foreignField: "_id",
+                as: "project",
+              },
+            },
+            {
+                $lookup: {
+                  from: "users",
+                  localField: "created_by",
+                  foreignField: "_id",
+                  as: "created_by_data",
+                },
+              },
+          ]);
+          const post = allPosts.find(e=>e._id==id); 
+             const postReviews= await reviewModel.aggregate([{
+                $lookup: {
+                  from: "users",
+                  localField: "user_id",
+                  foreignField: "_id",
+                  as: "user_data",
+                },
+              },]);
+              const reviews = postReviews.filter(e=>e.post_id==id)
+            const userPost = await postModel.populate(post, {path:"authors"}); 
+           const getPost ={...userPost,reviews:reviews} 
+            res.status(200).send(getPost);
     } catch (error) {
         console.log(error)
     }

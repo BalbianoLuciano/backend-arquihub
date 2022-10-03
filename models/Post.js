@@ -13,26 +13,34 @@ const PostSchema = new mongoose.Schema({
         enum: ["private", "public"],
         default: "public"
     },
-    createdBy: {
-        type: String,
+    created_by: {
+        type: mongoose.Types.ObjectId,
+    },
+    project_id:{
+        type: mongoose.Types.ObjectId,
     },
     project_type: {
-        type: String
+        type: String,
     },
     mts2: {
         type: Number
     },
+    image: [{
+        type: String,
+        default: "https://res.cloudinary.com/dfcd64nhm/image/upload/v1664674482/Arquihub/4e36ead625b16bac653d2b07c7a57005_if3usp.png"
+    }],
     rooms: {
         type: Number
     },
     year: {
-        type: Number
+        type: String
     },
     bathrooms: {
         type: Number
     },
-    authors: [{
-        type: String
+    authors:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "users"
     }],
     additional_data: [{
         type: String

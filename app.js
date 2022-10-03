@@ -9,7 +9,8 @@ const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
 const { CORS_URL } = process.env
 
-app.use(cors())
+app.use(cors());
+
 
 
 ///auth0
@@ -18,10 +19,12 @@ app.use(cors())
 
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(express.static("storage"))
 app.use(morgan('dev'));
+
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', CORS_URL); // update to match the domain you will make the request from
   res.header('Access-Control-Allow-Credentials', 'true');
@@ -29,10 +32,6 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   next();
 });
-
-
-
-
 
 const jsonParser = bodyParser.json()
 

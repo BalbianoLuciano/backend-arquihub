@@ -153,7 +153,7 @@ const getPost = async (req, res) => {
               },]);
               const reviews = postReviews.filter(e=>e.post_id==id)
             const userPost = await postModel.populate(post, {path:"authors"}); 
-           const getPost ={...userPost,reviews:reviews} 
+           const getPost ={...userPost/* ,reviews:reviews */} 
             res.status(200).send(getPost);
     } catch (err) {
         res.status(400).send({err:err.message})

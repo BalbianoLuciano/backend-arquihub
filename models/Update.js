@@ -5,14 +5,14 @@ const mongooseDelete = require("mongoose-delete")
 const UpdateSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref:"user",
+        ref:"users",
     },
     project_id: {
         type: mongoose.Types.ObjectId,
     },
     storage_id:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"storage"
+        ref:"storages"
     },
     title: {
         type: String

@@ -3,7 +3,7 @@ const axios = require("axios");
 const newsData = async (req, res) => {
   try {
     const news = await axios.get(
-      "https://newsapi.org/v2/everything?domains=archdaily.com&apiKey=beff5ec69aa84cdd99de0bd63db3b44a"
+      "https://newsapi.org/v2/everything?domains=archdaily.com&apiKey=f1944b649554455cb9ed1fc7a6f8c495"
     );
     const filterNews = news.data.articles.map((e, index) => {
       return {

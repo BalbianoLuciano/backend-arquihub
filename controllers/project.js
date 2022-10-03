@@ -88,10 +88,17 @@ const getProject = async (req, res) => {
         foreignField: "_id",
         as: "created_by_data",
       },
+      $lookup: {
+        from: "storages",
+        localField: "project_file",
+        foreignField: "_id",
+        as: "initial_file",
+      },
     }])
+    const Updates = await updateModel.find({project_id: id }).populate("user").populate("storage")
     const allProjects2 = await projectModel.populate(allProjects, {path: "users"});
     const project = allProjects2.find(e=>e._id==id);
-    res.status(200).send(project);
+    res.status(200).send(...project, Updates);
   } catch (error) {
     console.log(error);
   }

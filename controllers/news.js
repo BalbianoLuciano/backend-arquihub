@@ -1,9 +1,9 @@
 const axios = require("axios");
 
 const newsData = async (req, res) => {
-  try {
-    const news = await axios.get(
-      "https://newsapi.org/v2/everything?domains=archdaily.com&apiKey=f1944b649554455cb9ed1fc7a6f8c495"
+    try{
+      const news = await axios.get(
+      "https://newsapi.org/v2/everything?domains=archdaily.com&apiKey=beff5ec69aa84cdd99de0bd63db3b44a"
     );
     const filterNews = news.data.articles.map((e, index) => {
       return {
@@ -16,9 +16,9 @@ const newsData = async (req, res) => {
           date: e.publishedAt.substring(0,10)
       }
     })
-    res.status(200).json(filterNews)
-  } catch (error) {
-    res.status(404).json(error)
-  }
+    res.status(200).send(filterNews)}
+    catch(err){
+      res.status(400).send({err:err.message})
+    }
 }
 module.exports = newsData;

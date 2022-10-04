@@ -1,6 +1,5 @@
-const { projectModel } = require("../models");
+const { projectModel, updateModel } = require("../models");
 const { create } = require("../models/Storage");
-
 const getProjects = async (req, res) => {
   try {
     console.log("hola");
@@ -16,16 +15,20 @@ const createProject = async (req, res) => {
     const {
       title,
       description,
-      project_type,
       created_by,
       users,
+      project_file,
+      pdf_file,
+      visibility
     } = req.body;
 
     const createProject = await projectModel.create({
       title,
       description,
-      project_type,
-      created_by
+      created_by,
+      project_file,
+      pdf_file,
+      visibility
     });
     console.log(createProject);
     const {_id} = createProject;
@@ -88,12 +91,22 @@ const getProject = async (req, res) => {
         foreignField: "_id",
         as: "created_by_data",
       },
+      $lookup: {
+        from: "storages",
+        localField: "project_file",
+        foreignField: "_id",
+        as: "initial_file",
+      },
     }])
+    const updates = await updateModel.findAllData({})
+/*     const updates2  = await updateModel.populate(updates, {path: "users"})
+    console.log(updates2.storage) */
     const allProjects2 = await projectModel.populate(allProjects, {path: "users"});
     const project = allProjects2.find(e=>e._id==id);
-    res.status(200).send(project);
-  } catch (error) {
-    console.log(error);
+    const update = updates.filter(e=>e.project_id==id);
+    res.status(200).send({...project,updates:update});
+  } catch (err) {
+    res.status(404).send({err: err.message});
   }
 };
 

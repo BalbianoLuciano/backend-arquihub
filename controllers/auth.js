@@ -34,9 +34,15 @@ const signUp = async (req, res) => {
 
             console.log(newUser)
             const addUser = await usersModel.create(newUser)
-            
             const token = sign({ id: addUser._id }, `${SECRET}`, { expiresIn: 86400 })
-            res.status(200).send({ token })
+            
+            const userId = addUser._id
+            const userType = addUser.type
+            const userAvatar = addUser.avatar
+            const userMail = addUser.email
+            const userName = addUser.name
+           res.send({token, userId, userType, userAvatar, userMail, userName})
+
         }else{
             return res.status(400).send("User already registered")
         }
@@ -50,7 +56,6 @@ const signUp = async (req, res) => {
 
 const logIn = async (req, res) => {
     const{email, password}= req.body
-    
     try {
        const findUser = await usersModel.findOne({email})
        
@@ -61,9 +66,14 @@ const logIn = async (req, res) => {
        if(!matches) return res.status(400).send({token: null, message: "Invalid password"})
        
        const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
+        const userId = findUser._id
+        const userType = findUser.type
+        const userAvatar = findUser.avatar
+        const userMail = findUser.email
+        const userName = findUser.name
 
 
-       res.send({token: token})
+       res.send({token, userId, userType, userAvatar, userMail, userName})
 
     } catch (error) {
         console.log(error)
@@ -71,5 +81,42 @@ const logIn = async (req, res) => {
 }
 
 
+const googleLogin = async(req,res)=>{
+    const {email, name, lastname, avatar}= req.body
+    const findUser = await usersModel.findOne({email})
+   
+    try {
+        if(!findUser){
+            const newUser = {
+                name,
+                lastname,
+                email,
+                type :"user",
+                avatar
+            }
+            const addUser = await usersModel.create(newUser)
+            const token = sign({ id: addUser._id }, `${SECRET}`, { expiresIn: 86400 })
+            
+            const userId = addUser._id
+            const userType = addUser.type
+            const userAvatar = addUser.avatar
+            const userMail = addUser.email
+            const userName = addUser.name
+           res.send({token, userId, userType, userAvatar, userMail, userName})
+        }else{
+ 
+             const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
+             const userId = findUser._id
+             const userType = findUser.type
+             const userAvatar = findUser.avatar
+             const userMail = findUser.email
+             const userName = findUser.name
+             res.send({token, userId, userType, userAvatar, userMail, userName})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
 
-module.exports = { signUp, logIn }
+
+module.exports = { signUp, logIn, googleLogin }

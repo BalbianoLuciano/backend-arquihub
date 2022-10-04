@@ -18,13 +18,17 @@ const createProject = async (req, res) => {
       created_by,
       users,
       project_file,
+      pdf_file,
+      visibility
     } = req.body;
 
     const createProject = await projectModel.create({
       title,
       description,
       created_by,
-      project_file
+      project_file,
+      pdf_file,
+      visibility
     });
     console.log(createProject);
     const {_id} = createProject;

@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer")
+const template = require("../utils/templates/auth") 
 
 
 const createTrans =()=>{

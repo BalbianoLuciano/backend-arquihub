@@ -1,6 +1,8 @@
 const { usersModel } = require("../models");
 const { jwt, sign } = require("jsonwebtoken")
 const { SECRET } = require("../config/config");
+const emailer = require("../config/emailer")
+const {LoggedTemplate, RegisteredTemplate} = require("../utils/templates/auth")
 
 const signUp = async (req, res) => {
     try {
@@ -44,6 +46,8 @@ const signUp = async (req, res) => {
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
+            emailer.sendMail(addUser, "Bienvenido a Arquihub!", RegisteredTemplate)
+
            res.send({token, userId, userType, userAvatar, userMail, userName})
 
         }else{
@@ -75,6 +79,7 @@ const logIn = async (req, res) => {
         const userMail = findUser.email
         const userName = findUser.name
 
+        emailer.sendMail(findUser, "Te has logueado a Arquihub!", LoggedTemplate)
 
        res.send({token, userId, userType, userAvatar, userMail, userName})
 
@@ -106,6 +111,7 @@ const googleLogin = async(req,res)=>{
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
+            emailer.sendMail(findUser, "Bienvenido a Arquihub!", RegisteredTemplate)
             
            res.send({token, userId, userType, userAvatar, userMail, userName})
         }else{
@@ -117,6 +123,8 @@ const googleLogin = async(req,res)=>{
              const userMail = findUser.email
              const userName = findUser.name
             const userLastname = findUser.lastname
+            emailer.sendMail(findUser, "Te has logueado a Arquihub!", LoggedTemplate)
+
              res.send({token, userId, userType, userAvatar, userMail, name, lastname})
         }
     } catch (error) {

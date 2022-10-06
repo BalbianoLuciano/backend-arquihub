@@ -1,4 +1,5 @@
 const { usersModel } = require("../models");
+const {sendEmail} = require("../config/emailer")
 
 const getUsers = async (req, res) => {
   try {
@@ -20,6 +21,10 @@ const createUser = async (req, res) => {
       type,
       favourites,
       status,
+      job,
+      description,
+      page, 
+      location
     } = req.body;
     if (!name || !lastname || !nickname || !email || !password) {
       return res.status(400).send("Missing required parameters");
@@ -32,7 +37,12 @@ const createUser = async (req, res) => {
       email,
       password,
       type,
+      favourites,
       status,
+      job,
+      description,
+      page, 
+      location
     };
     console.log(name);
     await usersModel.create(newUser);
@@ -55,6 +65,10 @@ const updateUser = async (req, res) => {
       projects,
       favourites,
       status,
+      job,
+      description,
+      page, 
+      location
     } = req.body;
     console.log(status)
     const editedUser = {
@@ -67,6 +81,10 @@ const updateUser = async (req, res) => {
       projects,
       favourites,
       status,
+      job,
+      description,
+      page, 
+      location
     };
 
     await usersModel.updateOne({_id:id}, editedUser);

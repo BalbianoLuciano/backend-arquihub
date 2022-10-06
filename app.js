@@ -8,8 +8,9 @@ const bodyParser = require('body-parser')
 const morgan = require("morgan")
 const cookieParser = require("cookie-parser")
 const { CORS_URL } = process.env
+const stripe = require("stripe")
 
-app.use(cors());
+app.use(cors({origin: 'http://localhost:3000'}));
 
 
 

@@ -85,15 +85,15 @@ const logIn = async (req, res) => {
 
 
 const googleLogin = async(req,res)=>{
-    const {email, avatar}= req.body
+    const {email, avatar, name, lastname}= req.body
     const findUser = await usersModel.findOne({email})
    
     try {
         if(!findUser){
             const newUser = {
-                // name,
-                // lastname,
-                email,
+                name: name,
+                lastname: lastname,
+                email: email,
                 avatar : avatar,
                 type :"user",
                 nickname: email
@@ -116,7 +116,8 @@ const googleLogin = async(req,res)=>{
              const userAvatar = avatar
              const userMail = findUser.email
              const userName = findUser.name
-             res.send({token, userId, userType, userAvatar, userMail, userName})
+            const userLastname = findUser.lastname
+             res.send({token, userId, userType, userAvatar, userMail, name, lastname})
         }
     } catch (error) {
         console.log(error)

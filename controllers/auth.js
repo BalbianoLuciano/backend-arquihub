@@ -62,11 +62,11 @@ const logIn = async (req, res) => {
     try {
        const findUser = await usersModel.findOne({email})
        
-       if(!findUser)return res.status(400).send("user not found")
+       if(!findUser)return res.status(400).send({errEmail: "Couldn´t find the user"})
        
        const matches = await usersModel.comparePassword(password, findUser.password)
 
-       if(!matches) return res.status(400).send({token: null, message: "Invalid password"})
+       if(!matches) return res.status(400).send({errPassword: "Invalid password"})
        
        const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
         const userId = findUser._id

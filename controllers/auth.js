@@ -13,7 +13,8 @@ const signUp = async (req, res) => {
             type,
             projects,
             favourites,
-            status
+            status,
+            avatar
         } = req.body
 
         const findUser = await usersModel.find({ email })
@@ -29,7 +30,9 @@ const signUp = async (req, res) => {
                 type,
                 projects,
                 favourites,
-                status
+                status,
+                avatar : "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+
             }
 
             console.log(newUser)
@@ -68,7 +71,7 @@ const logIn = async (req, res) => {
        const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
         const userId = findUser._id
         const userType = findUser.type
-        const userAvatar = findUser.avatar
+        const userAvatar = "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
         const userMail = findUser.email
         const userName = findUser.name
 
@@ -82,17 +85,18 @@ const logIn = async (req, res) => {
 
 
 const googleLogin = async(req,res)=>{
-    const {email, name, lastname, avatar}= req.body
+    const {email, avatar, name, lastname}= req.body
     const findUser = await usersModel.findOne({email})
    
     try {
         if(!findUser){
             const newUser = {
-                name,
-                lastname,
-                email,
+                name: name,
+                lastname: lastname,
+                email: email,
+                avatar : avatar,
                 type :"user",
-                avatar
+                nickname: email
             }
             const addUser = await usersModel.create(newUser)
             const token = sign({ id: addUser._id }, `${SECRET}`, { expiresIn: 86400 })
@@ -102,16 +106,18 @@ const googleLogin = async(req,res)=>{
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
+            
            res.send({token, userId, userType, userAvatar, userMail, userName})
         }else{
  
              const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
              const userId = findUser._id
              const userType = findUser.type
-             const userAvatar = findUser.avatar
+             const userAvatar = avatar
              const userMail = findUser.email
              const userName = findUser.name
-             res.send({token, userId, userType, userAvatar, userMail, userName})
+            const userLastname = findUser.lastname
+             res.send({token, userId, userType, userAvatar, userMail, name, lastname})
         }
     } catch (error) {
         console.log(error)

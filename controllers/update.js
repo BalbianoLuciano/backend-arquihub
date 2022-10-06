@@ -27,6 +27,17 @@ const createUpdate = async (req, res) => { //llegan title, description por body
     }
 }
 
+const deleteUpdate = async (req, res) => {
+    try {
+      const { id } = req.params;
+      await updateModel.deleteOne({ _id: id });
+  
+      res.send("update deleted");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 const putUpdate = async (req, res) => { 
     try {
         const { id } = req.params;
@@ -46,7 +57,7 @@ const putUpdate = async (req, res) => {
 
 
 
-module.exports = { getUpdates, createUpdate, putUpdate }
+module.exports = { getUpdates, createUpdate, putUpdate, deleteUpdate}
 
 /*
 project

@@ -32,9 +32,6 @@ const createUser = async (req, res) => {
       email,
       password,
       type,
-      projects,
-      posts,
-      favourites,
       status,
     };
     console.log(name);
@@ -59,7 +56,7 @@ const updateUser = async (req, res) => {
       favourites,
       status,
     } = req.body;
-
+    console.log(status)
     const editedUser = {
       name,
       lastname,
@@ -72,7 +69,7 @@ const updateUser = async (req, res) => {
       status,
     };
 
-    await usersModel.findOneAndUpdate(id, editedUser);
+    await usersModel.updateOne({_id:id}, editedUser);
     res.send(editedUser);
   } catch (error) {
     res.status(400).send("Failed to update user");

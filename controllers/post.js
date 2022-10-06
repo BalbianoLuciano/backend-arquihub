@@ -6,8 +6,8 @@ const getPosts = async (req, res) => {
         const allPosts = await postModel.find({})
         res.send(allPosts)
 
-    } catch (error) {
-        res.status(400).send("No posts found")
+    } catch (err) {
+        res.status(400).send({err:err.message})
     }
 }
 
@@ -152,11 +152,11 @@ const getPost = async (req, res) => {
                 },
               },]);
               const reviews = postReviews.filter(e=>e.post_id==id)
-            const userPost = await postModel.populate(post, {path:"users"}); 
-           const getPost ={...userPost,reviews:reviews} 
+            const userPost = await postModel.populate(post, {path:"authors"}); 
+           const getPost ={...userPost ,reviews:reviews } 
             res.status(200).send(getPost);
-    } catch (error) {
-        console.log(error)
+    } catch (err) {
+        res.status(400).send({err:err.message})
     }
 }
 

@@ -16,7 +16,8 @@ const signUp = async (req, res) => {
             projects,
             favourites,
             status,
-            avatar
+            avatar,
+            premium
         } = req.body
 
         const findUser = await usersModel.find({ email })
@@ -33,7 +34,12 @@ const signUp = async (req, res) => {
                 projects,
                 favourites,
                 status,
-                avatar : "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+                avatar : "https://cdn-icons-png.flaticon.com/512/1946/1946429.png",
+                job,
+                description,
+                page, 
+                location,
+                premium
 
             }
 
@@ -46,9 +52,10 @@ const signUp = async (req, res) => {
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
+            const isPremium = addUser.premium
             emailer.sendMail(addUser, "Bienvenido a Arquihub!", RegisteredTemplate)
 
-           res.send({token, userId, userType, userAvatar, userMail, userName})
+           res.send({token, userId, userType, userAvatar, userMail, userName, isPremium})
 
         }else{
             return res.status(400).send("User already registered")
@@ -78,8 +85,10 @@ const logIn = async (req, res) => {
         const userAvatar = "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
         const userMail = findUser.email
         const userName = findUser.name
+        const isPremium = findUser.premium
 
-       res.send({token, userId, userType, userAvatar, userMail, userName})
+
+       res.send({token, userId, userType, userAvatar, userMail, userName, isPremium})
 
     } catch (error) {
         console.log(error)
@@ -109,9 +118,11 @@ const googleLogin = async(req,res)=>{
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
+            const isPremium = addUser.premium
+
             emailer.sendMail(findUser, "Bienvenido a Arquihub!", RegisteredTemplate)
             
-           res.send({token, userId, userType, userAvatar, userMail, userName})
+           res.send({token, userId, userType, userAvatar, userMail, userName, isPremium})
         }else{
  
              const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
@@ -121,8 +132,10 @@ const googleLogin = async(req,res)=>{
              const userMail = findUser.email
              const userName = findUser.name
             const userLastname = findUser.lastname
+            const isPremium = findUser.premium
 
-             res.send({token, userId, userType, userAvatar, userMail, name, lastname})
+
+             res.send({token, userId, userType, userAvatar, userMail, name, lastname, isPremium})
         }
     } catch (error) {
         console.log(error)

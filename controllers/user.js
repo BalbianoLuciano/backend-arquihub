@@ -24,7 +24,8 @@ const createUser = async (req, res) => {
       job,
       description,
       page, 
-      location
+      location,
+      premium
     } = req.body;
     if (!name || !lastname || !nickname || !email || !password) {
       return res.status(400).send("Missing required parameters");
@@ -42,7 +43,8 @@ const createUser = async (req, res) => {
       job,
       description,
       page, 
-      location
+      location,
+      premium:false
     };
     // console.log(name);
     await usersModel.create(newUser);
@@ -68,7 +70,8 @@ const updateUser = async (req, res) => {
       job,
       description,
       page, 
-      location
+      location,
+      premium
     } = req.body;
     // console.log(status)
     const editedUser = {
@@ -84,7 +87,8 @@ const updateUser = async (req, res) => {
       job,
       description,
       page, 
-      location
+      location,
+      premium
     };
 
     await usersModel.updateOne({_id:id}, editedUser);

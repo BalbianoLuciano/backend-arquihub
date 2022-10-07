@@ -72,7 +72,7 @@ const updateUser = async (req, res) => {
     await usersModel.updateOne({_id:id}, editedUser);
     res.send(editedUser);
   } catch (error) {
-    res.status(400).send("Failed to update user");
+    res.status(400).json({error:error.message});
   }
 };
 

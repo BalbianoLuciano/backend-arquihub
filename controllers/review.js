@@ -52,14 +52,26 @@ const deleteReview = async (req, res) => {
 
 const getReview = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id, mood } = req.params;
+
         if(id.length < 24){
             return res.status(400).send("No searchable id")
         }
-        const Review = await reviewModel.findOne({_id:id})
-        res.status(200).send(Review)
+        if(mood=="post"){
+            const reviews= await reviewModel.find({}).populate("user_id")
+            const review = reviews.filter(e=>e.post_id==id); 
+            return res.status(200).json(review)
+        }
+        if(mood==="user"){
+        const reviews= await reviewModel.find({user_id:id}).populate("post_id");
+        const review = reviews.filter(e=>e.post_id==id); 
+        return res.status(200).send(review)}
+
+        const reviews= await reviewModel.find({}).populate("post_id").populate("user_id");
+        const review = reviews.filter(e=>e._id==id); 
+        return res.status(200).send(review)
     } catch (error) {
-        res.status(400).send("Cant get this review")
+        res.status(400).json({error:error.message})
     }
 }
 

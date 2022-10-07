@@ -47,8 +47,27 @@ const UserSchema = new mongoose.Schema({
     avatar:{
         type:String,
         // default:"https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+    },
+    job:{
+        type:String,
+        default:""
+    },
+    description:{
+        type:String,
+        default:""
+    },
+    page:{
+        type:String,
+        default:""
+    },
+    location:{
+        type:String,
+        default:""
+    },
+    premium:{
+        type: Boolean,
+        default : false
     }
-
 }, {
     timestamps: true
 })

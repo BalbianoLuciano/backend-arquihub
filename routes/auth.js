@@ -2,10 +2,11 @@ const express = require("express")
 const router = express.Router();
 const { usersModel } = require("../models")
 const {signUp, logIn, googleLogin} = require("../controllers/auth");
-const { find } = require("../models/Storage");
 const emailer = require("../config/emailer")
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const { SECRET } = require("../config/config");
 const JWT_SECRET = "some super secret"
+const {encryptPassword} = require("../models/User")
 
 router.post("/signup", signUp)
 
@@ -39,98 +40,27 @@ router.post("/forgotPassword", async (req, res, next) => {
 })
 
 
-router.post("/resetPassword/:id/:token", async (req, res, next) => {
-     const {id, token, email, password, password2} = req.body
+router.post("/resetPassword/:id/:token", async(req,res,next)=>{
+//    const {} = req.params
+    const {id, token, email,  password, password2}= req.body
+    const findUser = await usersModel.findOne({email})
+    if(id !== findUser.id)return res.send("Invalid id")
+   
 
-     const findUser = await usersModel.findOne({ email })
-     if(id !== findUser.id) return res.send("Invalid Id") ;
-     const secret = JWT_SECRET + findUser.password
-     
-     try {
-         const payload = jwt.verify(token, secret)
-        if(password === password2){
-            // findUser.password = password
-           const user =  await usersModel.findByIdAndUpdate(id, {password: password})
-                console.log(user)
-         emailer.sendMail(email.trimRight(), "Password reestablished!",
-         `<div>
-         <p>You can now log in with your new password</p>
-         <p> http://localhost:3000/home </p>
-       </div`)
-         
-           
-           res.send(user)
-        }
-    } catch (error) {
-        console.log(error);
-    }
+    const newToken = jwt.sign({id: findUser._id}, SECRET, {expiresIn: 86400})  
 
-})
+    const updated =  await usersModel.findByIdAndUpdate(id,{password: await usersModel.encryptPassword(password)})
+    console.log(updated);
 
-router.post("/forgotPassword", async(req,res,next)=>{
-    const {email}= req.body;
 
-    const findUser = await usersModel.findOne(email)
-    if(!findUser) return res.send("User Not registered")
-
-    //user exist send link for 15 minutes
-    const secret = JWT_SECRET + findUser.password
-    const payload = {
-        email: findUser.email,
-        id: findUser._id
-    }
-    const token = jwt.sign(payload, secret,{expiresIn:"15m"})
-
-    const link = `http://localhost:3000/resetPassord${findUser._id}/${token}`
-    emailer.sendMail(email, "Forgotten password redirect", 
+    emailer.sendMail(email.trimRight(), "Reestablished password!",
     `<div>
-    <p>Link to reset password</p>
-    <a href ${link}/>
+        <p>You can now login with your new password</p>
+        <p> http://localhost:3000/home  </p>
     </div`)
 
-    console.log(link);
-    res.send("Password Reset Link sent to your email")
-})
-
-router.get("/resetPassword/:id/:token", async(req,res,next)=>{
-    const {id, token}= req.params
-    
-    //check if id is in db
-    const findUser = await usersModel.findOne(email)
-
-    if(id !== findUser._id)return res.send("Invalid id")
-    const secret = JWT_SECRET + findUser.password
-    try {
-        const payload = jwt.verify(token, secret)
-        //res.render("resetPassword", {email: user.email})
-
-    } catch (error) {
-        console.log(error);
-        res.send(error.message)
-    }
-
-})
-router.post("/resetPassword/:id/:token", async(req,res,next)=>{
-    const {id, token}= req.params;
-    const {password, password2}= req.body
-    const findUser = await usersModel.findOne(email)
+    res.send(updated)
    
-    if(id !== findUser._id)return res.send("Invalid id")
-    const secret = JWT_SECRET + findUser.password
-    try {
-        const payload = jwt.verify(token, secret)
-            //validat match 
-        //hash pass before saving
-            // find user with email && id and update password
-            findUser.password= password2
-            res.send(findUser)
-
-
-    } catch (error) {
-        console.log(error);
-        res.send(error.message)
-    }
-
 })
 
 

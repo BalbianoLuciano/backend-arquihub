@@ -29,7 +29,7 @@ const createUser = async (req, res) => {
     if (!name || !lastname || !nickname || !email || !password) {
       return res.status(400).send("Missing required parameters");
     }
-    console.log(name);
+    // console.log(name);
     const newUser = {
       name,
       lastname,
@@ -44,7 +44,7 @@ const createUser = async (req, res) => {
       page, 
       location
     };
-    console.log(name);
+    // console.log(name);
     await usersModel.create(newUser);
     res.send(newUser);
   } catch (error) {
@@ -70,7 +70,7 @@ const updateUser = async (req, res) => {
       page, 
       location
     } = req.body;
-    console.log(status)
+    // console.log(status)
     const editedUser = {
       name,
       lastname,

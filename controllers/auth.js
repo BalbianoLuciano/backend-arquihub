@@ -59,11 +59,11 @@ const logIn = async (req, res) => {
     try {
        const findUser = await usersModel.findOne({email})
        
-       if(!findUser)return res.status(400).send("user not found")
+       if(!findUser)return res.status(400).json({err:"user not found"})
        
        const matches = await usersModel.comparePassword(password, findUser.password)
 
-       if(!matches) return res.status(400).send({token: null, message: "Invalid password"})
+       if(!matches) return res.status(400).json({err: "Invalid password"})
        
        const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
         const userId = findUser._id
@@ -73,10 +73,10 @@ const logIn = async (req, res) => {
         const userName = findUser.name
 
 
-       res.send({token, userId, userType, userAvatar, userMail, userName})
+       res.status(200).json({token, userId, userType, userAvatar, userMail, userName})
 
-    } catch (error) {
-        console.log(error)
+    } catch (err) {
+        res.status(400).json({err: err.message})
     }
 }
 

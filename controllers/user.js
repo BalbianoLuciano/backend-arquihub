@@ -115,7 +115,7 @@ const getUser = async (req, res) => {
       path: "posts",
     });
     const usersFavourites = await usersModel.populate(usersPosts, {
-      path: "favourites_post",
+      path: "favourites",
     });
     const getUser = usersFavourites.find((e) => e._id == id);
     res.status(200).send(getUser);

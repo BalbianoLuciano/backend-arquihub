@@ -121,7 +121,6 @@ const googleLogin = async(req,res)=>{
              const userMail = findUser.email
              const userName = findUser.name
             const userLastname = findUser.lastname
-            emailer.sendMail(findUser, "Te has logueado a Arquihub!", LoggedTemplate)
 
              res.send({token, userId, userType, userAvatar, userMail, name, lastname})
         }

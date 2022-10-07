@@ -47,7 +47,7 @@ const signUp = async (req, res) => {
            res.send({token, userId, userType, userAvatar, userMail, userName})
 
         }else{
-            return res.status(400).send("User already registered")
+            return res.status(400).send({error:"User already registered"})
         }
     } catch (error) {
         console.log(error)

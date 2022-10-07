@@ -4,10 +4,12 @@ const mongooseDelete = require("mongoose-delete")
 const ReviewSchema = new mongoose.Schema(
   {
     post_id: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"posts"
     },
     user_id: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"users"
     },
     value: {
       type: Number,

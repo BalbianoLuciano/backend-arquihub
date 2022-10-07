@@ -1,9 +1,10 @@
 const express = require("express")
 const router = express.Router();
-const { paymentModel } = require("../models")
+const { postPaymentSubscription } = require("../controllers/payment")
+//const { paymentModel } = require("../models")
 
 router.get("/")
-router.post("/")
+router.post("/", postPaymentSubscription)
 router.put("/")
 router.delete("/")
 

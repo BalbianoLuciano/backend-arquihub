@@ -56,7 +56,7 @@ const updateUser = async (req, res) => {
       favourites,
       status,
     } = req.body;
-
+    console.log(status)
     const editedUser = {
       name,
       lastname,
@@ -69,10 +69,10 @@ const updateUser = async (req, res) => {
       status,
     };
 
-    await usersModel.findOneAndUpdate(id, editedUser);
+    await usersModel.updateOne({_id:id}, editedUser);
     res.send(editedUser);
   } catch (error) {
-    res.status(400).send("Failed to update user");
+    res.status(400).json({error:error.message});
   }
 };
 
@@ -115,7 +115,7 @@ const getUser = async (req, res) => {
       path: "posts",
     });
     const usersFavourites = await usersModel.populate(usersPosts, {
-      path: "favourites_post",
+      path: "favourites",
     });
     const getUser = usersFavourites.find((e) => e._id == id);
     res.status(200).send(getUser);

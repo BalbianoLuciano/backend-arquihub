@@ -9,6 +9,9 @@ const StorageSchema = new mongoose.Schema(
     filename: {
       type: String,
     },
+    originalname: {
+      type: String
+    }
   },
   {
     timestamps: true,

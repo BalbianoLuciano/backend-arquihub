@@ -11,12 +11,12 @@ const UserSchema = new mongoose.Schema({
     },
     nickname: {
         type: String,
-        unique: true,
+        // unique: true,
     },
     email: {
         type: String,
         unique: true,
-        required: true
+        // required: true
     },
     password: {
         type: String,
@@ -37,12 +37,16 @@ const UserSchema = new mongoose.Schema({
     }],
     favourites: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "favourites_post"
+        ref: "posts"
     }],
     status: {
         type: String,
         enum: ["active", "banned", "inactive"],
         default: "active"
+    },
+    avatar:{
+        type:String,
+        // default:"https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
     }
 
 }, {

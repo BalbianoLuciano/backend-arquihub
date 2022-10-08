@@ -1,5 +1,8 @@
 const { postModel,reviewModel, usersModel} = require("../models")
 const {verifyToken}= require("../middlewares/auth.jwt")
+const emailer = require("../config/emailer")
+const {commentedPost, posted, postUpdated} = require("../utils/templates/post")
+
 
 const getPosts = async (req, res) => {
     try {
@@ -64,6 +67,8 @@ const createPost = async (req, res) => {
               );
           });
           const newPostF = await postModel.findById(id)
+          //necesito que llegue el mail del user por authors o createdBy
+          //   emailer.sendMail(authors, "Post Created!", posted)
 
           res.status(200).send(newPostF);
     } catch (err) {
@@ -103,6 +108,8 @@ const updatePost = async (req, res) => {
         }
 
         await postModel.findOneAndUpdate(id, updatePost)
+           //necesito que llegue el mail del user por authors o createdBy
+          //   emailer.sendMail(authors, "Post Created!", postUpdated)
         res.send(updatePost)
 
     } catch (error) {
@@ -153,8 +160,8 @@ const getPost = async (req, res) => {
               },]);
               const reviews = postReviews.filter(e=>e.post_id==id)
             const userPost = await postModel.populate(post, {path:"authors"}); 
-           const getPost ={...userPost ,reviews:reviews } 
-            res.status(200).send(getPost);
+/*            const getPost ={...userPost ,reviews:reviews }  */
+            res.status(200).send(userPost);
     } catch (err) {
         res.status(400).send({err:err.message})
     }

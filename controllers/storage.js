@@ -11,7 +11,6 @@ const getStorages = async (req, res) => {
   }
 };
 const createStorage = async (req, res) => {
-  console.log(req)
   try {
     const { file } = req;
     const fileData = {
@@ -40,7 +39,9 @@ const deleteStorage = async (req, res) => {
     const { id } = req.params;
     const searchStorage = await storageModel.findOne({ _id: id });
     const pathStorage = `${__dirname}/../storage/${searchStorage.filename}`;
-    fs.unlinkSync(pathStorage)
+    if (pathStorage) {
+      fs.unlinkSync(pathStorage)
+    }
     await storageModel.deleteOne({ _id: id });
     res.send("storage deleted");
   } catch (error) {

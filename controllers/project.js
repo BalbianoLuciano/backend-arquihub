@@ -2,7 +2,6 @@ const { projectModel, updateModel } = require("../models");
 const { create } = require("../models/Storage");
 const getProjects = async (req, res) => {
   try {
-    console.log("hola");
     const allProjects = await projectModel.find({});
     res.status(200).send(allProjects);
   } catch (error) {

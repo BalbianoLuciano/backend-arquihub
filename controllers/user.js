@@ -71,7 +71,8 @@ const updateUser = async (req, res) => {
       description,
       page, 
       location,
-      premium
+      premium,
+      avatar
     } = req.body;
     // console.log(status)
     const editedUser = {
@@ -88,7 +89,8 @@ const updateUser = async (req, res) => {
       description,
       page, 
       location,
-      premium
+      premium,
+      avatar
     };
 
     await usersModel.updateOne({_id:id}, editedUser);

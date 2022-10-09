@@ -10,16 +10,13 @@ const cookieParser = require("cookie-parser")
 const { CORS_URL } = process.env
 const stripe = require("stripe")
 
+
+
 app.use(cors());
 
 
 
 ///auth0
-
-
-
-
-
 
 
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));

@@ -14,9 +14,9 @@ const ProjectSchema = new mongoose.Schema(
         enum: ["private", "public"],
         default: "public"
     },
-    pdf_file: [{
-      type: String
-    }],
+    pdf_file: {
+      type: mongoose.Types.ObjectId,
+    },
     created_by: {
         type: mongoose.Types.ObjectId,
     },

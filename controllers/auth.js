@@ -43,7 +43,6 @@ const signUp = async (req, res) => {
             console.log(newUser)
             const addUser = await usersModel.create(newUser)
             const token = sign({ id: addUser._id }, `${SECRET}`, { expiresIn: 86400 })
-            
             const userId = addUser._id
             const userType = addUser.type
             const userAvatar = addUser.avatar
@@ -116,7 +115,9 @@ const googleLogin = async(req,res)=>{
 
             emailer.sendMail(findUser, "Bienvenido a Arquihub!", RegisteredTemplate)
             
-           res.send({token, userId, userType, userAvatar, userMail, userName, isPremium})
+
+           res.status(200).send({token, userId, userType, userAvatar, userMail, userName})
+
         }else{
  
              const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
@@ -125,11 +126,10 @@ const googleLogin = async(req,res)=>{
              const userAvatar = avatar
              const userMail = findUser.email
              const userName = findUser.name
-            const userLastname = findUser.lastname
-            const isPremium = findUser.premium
+             const userLastname = findUser.lastname
+             const isPremium = findUser.premium
+             res.status(200).send({token, userId, userType, userAvatar, userMail, userName, userLastname})
 
-
-             res.send({token, userId, userType, userAvatar, userMail, name, lastname, isPremium})
         }
     } catch (error) {
         console.log(error)

@@ -1,4 +1,4 @@
-const { reviewModel } = require("../models")
+const { reviewModel,postModel, usersModel } = require("../models")
 
 const getReviews = async (req, res) => {
     try {
@@ -14,14 +14,23 @@ const createReview = async (req, res) => {
     try {
         const { value, comment, post_id, user_id} = req.body;
         if(!value, !comment, !post_id,!user_id){
-            return res.status(400).send("Missing required parameters")
+            return res.status(400).send({error:"Missing required parameters"})
         }
+        const allReviews =await reviewModel.find({})
+        const reviews = allReviews.filter(e=>e.post_id==post_id);
+        let suma = 0;
+        console.log(value, comment, post_id, user_id)
+         reviews.forEach(e=> suma = suma + e.value)
+         suma = suma + value;
+         const prom = suma/(reviews.length+1);
+         console.log(reviews,suma,(reviews.length+1), prom)
+        await postModel.findOneAndUpdate({_id:post_id}, {rating:prom})
         const newReview = {value, comment, post_id, user_id} 
         await reviewModel.create(newReview)
         res.status(200).send(newReview)
 
     } catch (error) {
-        res.status(400).send("Cant post this review")
+        res.status(400).json({error:error.message})
     }
 }
 
@@ -29,9 +38,16 @@ const updateReview = async (req, res) => {
     try {
       
         const { id } = req.params;
-        const { value, comment, post_id} = req.body;
+        const { value, comment} = req.body;
         const updateReview = { value, comment, post_id}
         await reviewModel.findOneAndUpdate(id,  updateReview )
+        const {post_id} = await reviewModel.findById(id)
+        const allReviews =await reviewModel.find({})
+        const reviews = allReviews.filter(e=>e.post_id==post_id&& e._id!=id);
+        let suma = 0;
+         reviews.forEach(e=> suma = suma + e.value)
+          suma = suma + value
+        await postModel.findOneAndUpdate({_id:post_id}, {rating:suma/reviews.length+1})
         res.status(200).send(updateReview);
 
     } catch (error) {
@@ -42,7 +58,14 @@ const updateReview = async (req, res) => {
 const deleteReview = async (req, res) => {
     try {
         const { id } = req.params;
+        const {post_id} = await reviewModel.findById(id)
        await reviewModel.deleteOne({_id:id})
+       const allReviews =await reviewModel.find({})
+       const reviews = allReviews.filter(e=>e.post_id==post_id);
+       let suma = 0;
+        reviews.forEach(e=> suma = suma + e.value)
+       await postModel.findOneAndUpdate({_id:post_id}, {rating:suma/reviews.length})
+       
         res.status(200).send("Review deleted")
     } catch (error) {
         res.status(400).send("Failed to delete this review")

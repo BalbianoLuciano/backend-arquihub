@@ -35,7 +35,6 @@ const signUp = async (req, res) => {
             console.log(newUser)
             const addUser = await usersModel.create(newUser)
             const token = sign({ id: addUser._id }, `${SECRET}`, { expiresIn: 86400 })
-            
             const userId = addUser._id
             const userType = addUser.type
             const userAvatar = addUser.avatar
@@ -109,7 +108,7 @@ const googleLogin = async(req,res)=>{
             const userMail = addUser.email
             const userName = addUser.name
             
-           res.send({token, userId, userType, userAvatar, userMail, userName})
+           res.status(200).send({token, userId, userType, userAvatar, userMail, userName})
         }else{
  
              const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
@@ -119,7 +118,7 @@ const googleLogin = async(req,res)=>{
              const userMail = findUser.email
              const userName = findUser.name
             const userLastname = findUser.lastname
-             res.send({token, userId, userType, userAvatar, userMail, name, lastname})
+             res.status(200).send({token, userId, userType, userAvatar, userMail, userName, userLastname})
         }
     } catch (error) {
         console.log(error)

@@ -37,14 +37,19 @@ const postPaymentSubscription = async (req, res) => {
       default_payment_method: payment_method,
     },
   });
+  console.log("Esta es la suscripcion" + customer)
 
   const subscription = await stripe.subscriptions.create({
     customer: customer.id,
     items: [{plan: "price_1Lpk8NAfxOW2aSoA9FxPYA32"}],
-    expand: ['latest_invoice.payment_intent']
+    expand: ['latest_invoice.payment_intent'],    
   });
+  console.log("Esta es la suscripcion" + subscription)
   const status = subscription['latest_invoice']['payment_intent']['status']
   const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
+
+  console.log("Esta es la suscripcion" + status)
+  console.log("Esta es la suscripcion" + client_secret)
 
   res.json({'client_secret': client_secret, 'status': status});
 }

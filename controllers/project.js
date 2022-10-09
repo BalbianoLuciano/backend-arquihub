@@ -29,11 +29,10 @@ const createProject = async (req, res) => {
       pdf_file,
       visibility
     });
-    console.log(createProject);
     const {_id} = createProject;
     await users.forEach(async (e) => {
       await projectModel.updateOne({_id:_id},
-        { $push: { users: e } },
+        { $push: { users: e.value } },
         { new: true, useFindAndModify: false }
       );
     });
@@ -83,20 +82,32 @@ const deleteProject = async (req, res) => {
 const getProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const allProjects = await projectModel.aggregate([{
+    const allProjects = await projectModel.aggregate([
+    {
       $lookup: {
         from: "users",
         localField: "created_by",
         foreignField: "_id",
         as: "created_by_data",
       },
+    },
+    {
       $lookup: {
         from: "storages",
         localField: "project_file",
         foreignField: "_id",
         as: "initial_file",
       },
-    }])
+    },
+    {
+      $lookup: {
+        from: "storages",
+        localField: "pdf_file",
+        foreignField: "_id",
+        as: "pdf_initial_file",
+      },
+    }
+    ])
     const updates = await updateModel.findAllData({})
 /*     const updates2  = await updateModel.populate(updates, {path: "users"})
     console.log(updates2.storage) */

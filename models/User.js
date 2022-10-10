@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
     }],
     favourites: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "favourites_post"
+        ref: "posts"
     }],
     status: {
         type: String,
@@ -63,6 +63,10 @@ const UserSchema = new mongoose.Schema({
     location:{
         type:String,
         default:""
+    },
+    premium:{
+        type: Boolean,
+        default : false
     }
 }, {
     timestamps: true

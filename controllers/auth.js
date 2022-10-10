@@ -36,14 +36,11 @@ const signUp = async (req, res) => {
                 type,
                 status,
                 avatar : "https://cdn-icons-png.flaticon.com/512/1946/1946429.png",
-                avatar,
                 job,
                 description, 
                 location,
                 page,
                 job,
-                description,
-                page, 
                 location,
                 premium
             }

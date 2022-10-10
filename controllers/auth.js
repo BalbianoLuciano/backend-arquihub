@@ -2,7 +2,7 @@ const { usersModel } = require("../models");
 const { jwt, sign } = require("jsonwebtoken")
 const { SECRET } = require("../config/config");
 const emailer = require("../config/emailer")
-const {LoggedTemplate, RegisteredTemplate} = require("../utils/templates/auth")
+const {registered} = require("../templates/registered")
 
 const signUp = async (req, res) => {
     try {
@@ -16,7 +16,11 @@ const signUp = async (req, res) => {
             projects,
             favourites,
             status,
-            avatar
+            avatar,
+            job,
+            description, 
+            location,
+            page
         } = req.body
 
         const findUser = await usersModel.find({ email })
@@ -33,7 +37,12 @@ const signUp = async (req, res) => {
                 projects,
                 favourites,
                 status,
-                avatar : "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+                avatar : "https://cdn-icons-png.flaticon.com/512/1946/1946429.png",
+                avatar,
+                job,
+                description, 
+                location,
+                page
 
             }
 
@@ -46,12 +55,12 @@ const signUp = async (req, res) => {
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
-            emailer.sendMail(addUser, "Bienvenido a Arquihub!", RegisteredTemplate)
+            emailer.sendMail(addUser, "Bienvenido a Arquihub!", registered(addUser.name))
 
            res.send({token, userId, userType, userAvatar, userMail, userName})
 
         }else{
-            return res.status(400).send("User already registered")
+            return res.status(400).send("User already registered, try loggin in")
         }
     } catch (error) {
         console.log(error)
@@ -121,7 +130,6 @@ const googleLogin = async(req,res)=>{
              const userMail = findUser.email
              const userName = findUser.name
             const userLastname = findUser.lastname
-            emailer.sendMail(findUser, "Te has logueado a Arquihub!", LoggedTemplate)
 
              res.send({token, userId, userType, userAvatar, userMail, name, lastname})
         }

@@ -2,7 +2,7 @@ const { usersModel } = require("../models");
 const { jwt, sign } = require("jsonwebtoken")
 const { SECRET } = require("../config/config");
 const emailer = require("../config/emailer")
-const {LoggedTemplate, RegisteredTemplate} = require("../utils/templates/auth")
+const {registered} = require("../templates/registered")
 
 const signUp = async (req, res) => {
     try {
@@ -18,6 +18,10 @@ const signUp = async (req, res) => {
             favourites,
             status,
             avatar,
+            job,
+            description, 
+            location,
+            page,
             premium
         } = req.body
 
@@ -33,11 +37,12 @@ const signUp = async (req, res) => {
                 status,
                 avatar : "https://cdn-icons-png.flaticon.com/512/1946/1946429.png",
                 job,
-                description,
-                page, 
+                description, 
+                location,
+                page,
+                job,
                 location,
                 premium
-
             }
 
             console.log(newUser)
@@ -48,12 +53,13 @@ const signUp = async (req, res) => {
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
+            // emailer.sendMail(addUser, "Bienvenido a Arquihub!", registered(addUser.name))
             const isPremium = addUser.premium
-            emailer.sendMail(addUser, "Bienvenido a Arquihub!", RegisteredTemplate)
+            // emailer.sendMail(addUser, "Bienvenido a Arquihub!", RegisteredTemplate)
            res.send({token, userId, userType, userAvatar, userMail, userName, isPremium})
 
-
         }else{
+
             return res.status(400).send({error:"User already registered"})
         }
     } catch (error) {
@@ -126,6 +132,7 @@ const googleLogin = async(req,res)=>{
              const userAvatar = avatar
              const userMail = findUser.email
              const userName = findUser.name
+
              const userLastname = findUser.lastname
              const isPremium = findUser.premium
              res.status(200).send({token, userId, userType, userAvatar, userMail, userName, userLastname})

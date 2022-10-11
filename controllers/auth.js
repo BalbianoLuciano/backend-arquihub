@@ -53,9 +53,9 @@ const signUp = async (req, res) => {
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
-            emailer.sendMail(addUser, "Bienvenido a Arquihub!", registered(addUser.name))
+            // emailer.sendMail(addUser, "Bienvenido a Arquihub!", registered(addUser.name))
             const isPremium = addUser.premium
-            emailer.sendMail(addUser, "Bienvenido a Arquihub!", RegisteredTemplate)
+            // emailer.sendMail(addUser, "Bienvenido a Arquihub!", RegisteredTemplate)
            res.send({token, userId, userType, userAvatar, userMail, userName, isPremium})
 
         }else{
@@ -132,13 +132,10 @@ const googleLogin = async(req,res)=>{
              const userAvatar = avatar
              const userMail = findUser.email
              const userName = findUser.name
-<<<<<<< HEAD
-            const userLastname = findUser.lastname
-=======
+
              const userLastname = findUser.lastname
              const isPremium = findUser.premium
              res.status(200).send({token, userId, userType, userAvatar, userMail, userName, userLastname})
->>>>>>> 0b9b0e2d5704f7824771dfee48958fddc09939c4
 
         }
     } catch (error) {

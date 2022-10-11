@@ -1,4 +1,5 @@
 const { usersModel } = require("../models");
+const {sendEmail} = require("../config/emailer")
 
 const getUsers = async (req, res) => {
   try {
@@ -20,11 +21,16 @@ const createUser = async (req, res) => {
       type,
       favourites,
       status,
+      job,
+      description,
+      page, 
+      location,
+      premium
     } = req.body;
     if (!name || !lastname || !nickname || !email || !password) {
       return res.status(400).send("Missing required parameters");
     }
-    console.log(name);
+    // console.log(name);
     const newUser = {
       name,
       lastname,
@@ -32,9 +38,15 @@ const createUser = async (req, res) => {
       email,
       password,
       type,
+      favourites,
       status,
+      job,
+      description,
+      page, 
+      location,
+      premium:false
     };
-    console.log(name);
+    // console.log(name);
     await usersModel.create(newUser);
     res.send(newUser);
   } catch (error) {
@@ -55,8 +67,14 @@ const updateUser = async (req, res) => {
       projects,
       favourites,
       status,
+      job,
+      description,
+      page, 
+      location,
+      premium,
+      avatar
     } = req.body;
-    console.log(status)
+    // console.log(status)
     const editedUser = {
       name,
       lastname,
@@ -67,12 +85,18 @@ const updateUser = async (req, res) => {
       projects,
       favourites,
       status,
+      job,
+      description,
+      page, 
+      location,
+      premium,
+      avatar
     };
 
     await usersModel.updateOne({_id:id}, editedUser);
     res.send(editedUser);
   } catch (error) {
-    res.status(400).send("Failed to update user");
+    res.status(400).json({error:error.message});
   }
 };
 
@@ -115,7 +139,7 @@ const getUser = async (req, res) => {
       path: "posts",
     });
     const usersFavourites = await usersModel.populate(usersPosts, {
-      path: "favourites_post",
+      path: "favourites",
     });
     const getUser = usersFavourites.find((e) => e._id == id);
     res.status(200).send(getUser);

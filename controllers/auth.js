@@ -3,7 +3,6 @@ const { jwt, sign } = require("jsonwebtoken")
 const { SECRET } = require("../config/config");
 const emailer = require("../config/emailer")
 /* const {registered} = require("../templates/registered") */
-
 const signUp = async (req, res) => {
     try {
         const {
@@ -132,6 +131,7 @@ const googleLogin = async(req,res)=>{
              const userAvatar = avatar
              const userMail = findUser.email
              const userName = findUser.name
+
              const userLastname = findUser.lastname
              const isPremium = findUser.premium
              res.status(200).send({token, userId, userType, userAvatar, userMail, userName, userLastname})

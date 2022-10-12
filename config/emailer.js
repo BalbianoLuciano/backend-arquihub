@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer")
 const nodemailerSendgrid = require("nodemailer-sendgrid")
+const { SENGRID_APIKEY } = process.env
 
 const createTrans=()=>{
 
@@ -13,7 +14,7 @@ const createTrans=()=>{
     //   });
     const transport = nodemailer.createTransport(
         nodemailerSendgrid({
-            apiKey: "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"
+            apiKey: SENGRID_APIKEY
         })
     )
 

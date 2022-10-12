@@ -2,7 +2,7 @@ const { usersModel } = require("../models");
 const { jwt, sign } = require("jsonwebtoken")
 const { SECRET } = require("../config/config");
 const emailer = require("../config/emailer")
-const {registered} = require("../templates/registered")
+const registerTemplate = require("../templates/register.js")
 
 const signUp = async (req, res) => {
     try {
@@ -53,9 +53,14 @@ const signUp = async (req, res) => {
             const userAvatar = addUser.avatar
             const userMail = addUser.email
             const userName = addUser.name
-            // emailer.sendMail(addUser, "Bienvenido a Arquihub!", registered(addUser.name))
             const isPremium = addUser.premium
-            // emailer.sendMail(addUser, "Bienvenido a Arquihub!", RegisteredTemplate)
+            try{
+          
+                // emailer.sendMail(userMail, "Bienvenido a Arquihub!", registered(userName))
+                emailer.sendMail(newUser.email, newUser.name? `${newUser.name}, Welcome to Arquihub!`:`${newUser.nickname}, Welcome to Arquihub!`, registerTemplate)
+            }catch(error){
+               console.log(error);
+            }
            res.send({token, userId, userType, userAvatar, userMail, userName, isPremium})
 
         }else{
@@ -64,6 +69,7 @@ const signUp = async (req, res) => {
         }
     } catch (error) {
         console.log(error)
+        return res.status(400).send({error})
     }
 }
 
@@ -88,6 +94,7 @@ const logIn = async (req, res) => {
         const userMail = findUser.email
         const userName = findUser.name
         const isPremium = findUser.premium
+        
          res.send({token, userId, userType, userAvatar, userMail, userName, isPremium})
     } catch (err) {
         res.status(400).json({err: err.message})
@@ -119,8 +126,7 @@ const googleLogin = async(req,res)=>{
             const userName = addUser.name
             const isPremium = addUser.premium
 
-            emailer.sendMail(findUser, "Bienvenido a Arquihub!", RegisteredTemplate)
-            
+            emailer.sendMail(userMail, "Bienvenido a Arquihub!", registerTemplate)
 
            res.status(200).send({token, userId, userType, userAvatar, userMail, userName})
 
@@ -135,11 +141,20 @@ const googleLogin = async(req,res)=>{
 
              const userLastname = findUser.lastname
              const isPremium = findUser.premium
+            //  try{
+              
+            //  }catch(error){
+            //     console.log(error);
+            //     return res.status(400).send({error})
+
+            //  }
              res.status(200).send({token, userId, userType, userAvatar, userMail, userName, userLastname})
 
         }
     } catch (error) {
         console.log(error)
+        return res.status(400).send({error})
+
     }
 }
 

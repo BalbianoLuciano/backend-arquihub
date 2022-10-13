@@ -22,6 +22,10 @@ const ReviewSchema = new mongoose.Schema(
     comment: {
       type: String,
     },
+    bancomment: {
+      type: Boolean,
+      default: false
+    },
   },
   {
     timestamps: true,

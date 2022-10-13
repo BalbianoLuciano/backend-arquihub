@@ -7,6 +7,8 @@ const models = {
     reviewModel: require("./Review"),
     updateModel: require("./Update"),
     productModel: require("./Product"),
+    reviewReportModel: require("./ReviewReport"),
+    downloadModel: require("./download"),
 }
 
 module.exports = models 

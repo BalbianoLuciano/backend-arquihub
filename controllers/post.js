@@ -74,8 +74,6 @@ const createPost = async (req, res) => {
             );
         });
 
-        console.log(emails.flat(1));
-
         const newPostF = await postModel.findById(id)
         emailer.sendMail(emails.flat(1), "Post Created", `<div><p>Post created \n here is your <a href = https://arquihub.vercel.app/postDetail/${id}> link </a></p></div`)
 

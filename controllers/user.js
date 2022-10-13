@@ -1,5 +1,5 @@
 const { usersModel } = require("../models");
-const {sendEmail} = require("../config/emailer")
+const emailer = require("../config/emailer")
 
 const getUsers = async (req, res) => {
   try {
@@ -93,8 +93,28 @@ const updateUser = async (req, res) => {
       avatar
     };
 
-    await usersModel.updateOne({_id:id}, editedUser);
-    res.send(editedUser);
+    if(editedUser.status === "active"){
+      emailer.sendMail(editedUser.email,editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname},Your account has been reestablished!`, 
+      `${editedUser.name} Your account is now activated from the ban, welcome back!`)
+      await usersModel.updateOne({_id:id}, editedUser);
+      res.send(editedUser);
+    }
+
+    if(editedUser.status === "banned"){
+      emailer.sendMail(editedUser.email,editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account has been banned due the reports on your activity`, 
+      `${editedUser.name} Your account is now`)
+      await usersModel.updateOne({_id:id}, editedUser);
+      res.send(editedUser);
+    }
+
+    if(editedUser.status === "inactive"){
+      emailer.sendMail(editedUser.email, editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account is now inactive`, 
+      `${editedUser.name} Your account is now off, comeback anytime!`)
+      await usersModel.updateOne({_id:id}, editedUser);
+      res.send(editedUser);
+    }
+
+
   } catch (error) {
     res.status(400).json({error:error.message});
   }

@@ -36,7 +36,7 @@ const postPaymentSubscription = async (req, res) => {
       //console.log(email)
       user.save()
       let emailTo = customer.email;
-      emailer.sendMail(emailTo, "Bienvenido a Arquihub!", payAccepted)
+      emailer.sendMail(emailTo, "Payment confirmed", payAccepted)
     }  
 
   res.json({'client_secret': client_secret, 'status': status});

@@ -29,7 +29,7 @@ const createPost = async (req, res) => {
             image,
             authors,
             additional_data,
-            rating
+            rating,
         } = req.body;
 
         if (!title || !description || !project_type) {
@@ -49,14 +49,21 @@ const createPost = async (req, res) => {
             year,
             bathrooms,
             additional_data,
-            rating
+            rating,
         }
-        console.log(newPost)
+
+        const postCreator = await usersModel.findOne({"id": created_by})
+        const creator = postCreator.email
+        const postAuthors = await usersModel.find().where('_id').in(authors).exec();
+        const authorsEmails = postAuthors.map((author)=> author.email)
+        const emails = [creator, authorsEmails]
+
+        // console.log(newPost)
         const createPost = await postModel.create(newPost)
 
         const {id} = createPost;
          authors.forEach(async (e) => {
-            console.log(e)
+            // console.log(e)
             await postModel.updateOne({_id:id},
               { $push: { authors: e.value } },
               { new: true, useFindAndModify: false }
@@ -66,9 +73,11 @@ const createPost = async (req, res) => {
                 { new: true, useFindAndModify: false }
               );
           });
-          const newPostF = await postModel.findById(id)
-          //necesito que llegue el mail del user por authors o createdBy
-          //   emailer.sendMail(authors, "Post Created!", posted)
+          
+    console.log(emails.flat(1));
+
+    const newPostF = await postModel.findById(id)
+    emailer.sendMail (emails.flat(1), "Post Created", "<div><p>Post created</p></div")
 
           res.status(200).send(newPostF);
     } catch (err) {
@@ -107,9 +116,16 @@ const updatePost = async (req, res) => {
             rating
         }
 
+        const postCreator = await usersModel.findOne({"id": created_by})
+        const creator = postCreator.email
+        const postAuthors = await usersModel.find().where('_id').in(authors).exec();
+        const authorsEmails = postAuthors.map((author)=> author.email)
+        const emails = [creator, authorsEmails]
+
         await postModel.findOneAndUpdate(id, updatePost)
-           //necesito que llegue el mail del user por authors o createdBy
-          //   emailer.sendMail(authors, "Post Created!", postUpdated)
+        emailer.sendMail (emails.flat(1), `${title} has been updated`, "<div><p>Post updated</p></div")
+
+
         res.send(updatePost)
 
     } catch (error) {

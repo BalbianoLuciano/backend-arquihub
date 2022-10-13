@@ -29,6 +29,15 @@ const createProject = async (req, res) => {
       pdf_file,
       visibility
     });
+
+
+     const projectCreator = await usersModel.findOne({ "id": created_by })
+     const creator = projectCreator.email
+     const projectAuthors = await usersModel.find().where('_id').in(users).exec();
+     const authorsEmails = projectAuthors.map((author) => author.email)
+     const emails = [creator, authorsEmails]
+
+
     const {_id} = createProject;
     await users.forEach(async (e) => {
       await projectModel.updateOne({_id:_id},
@@ -37,6 +46,8 @@ const createProject = async (req, res) => {
       );
     });
     const newProject = await projectModel.findById(_id)
+    emailer.sendMail(emails.flat(1), "Project Created", `<div><p>Project created \n here is your <a href = https://arquihub.vercel.app/projectDetail/${id}> link </a></p></div`)
+
     res.status(200).send(newProject);
   } catch (error) {
     console.log(error);
@@ -54,6 +65,9 @@ const updateProject = async (req, res) => {
     await projectModel.findOneAndUpdate(id,    { 
       $set: {'description':description,'users':[] }
   });
+  const projectAuthors = await usersModel.find().where('_id').in(users).exec();
+  const authorsEmails = projectAuthors.map((author) => author.email)
+
      await users.forEach(async (e) => {
       await projectModel.updateOne({_id:id},
         { $push: { users: e } },
@@ -61,6 +75,8 @@ const updateProject = async (req, res) => {
       );
     }); 
     const updatedProject = await projectModel.findById(id)
+    emailer.sendMail(authorsEmails.flat(1), "Project Updated", `<div><p>Project Updated
+    </p></div`)
     res.status(200).send(updatedProject);
   } catch (error) {
     console.log(error);

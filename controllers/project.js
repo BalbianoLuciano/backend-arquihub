@@ -3,7 +3,16 @@ const { create } = require("../models/Storage");
 const emailer = require("../config/emailer")
 const getProjects = async (req, res) => {
   try {
-    const allProjects = await projectModel.find({});
+    const allProjects = await projectModel.aggregate([
+      {
+        $lookup: {
+          from: "storages",
+          localField: "pdf_file",
+          foreignField: "_id",
+          as: "pdf_initial_file",
+        },
+      }
+    ]);
     res.status(200).send(allProjects);
   } catch (error) {
     console.log(error);

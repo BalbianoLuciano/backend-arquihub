@@ -20,12 +20,13 @@ const createReview = async (req, res) => {
         const reviews = allReviews.filter(e=>e.post_id==post_id);
         let suma = 0;
         console.log(value, comment, post_id, user_id)
-         reviews.forEach(e=> suma = suma + e.value)
+         reviews.forEach(e=>{ suma = suma + (e.value?e.value:0)})
          suma = suma + value;
          const prom = suma/(reviews.length+1);
-         console.log(reviews,suma,(reviews.length+1), prom)
-        await postModel.findOneAndUpdate({_id:post_id}, {rating:prom})
+         console.log(suma, reviews.length+1);
+        await postModel.findOneAndUpdate({_id:post_id},{rating:prom})
         const newReview = {value, comment, post_id, user_id} 
+        console.log(newReview)
         await reviewModel.create(newReview)
         res.status(200).send(newReview)
 
@@ -45,7 +46,7 @@ const updateReview = async (req, res) => {
         const allReviews =await reviewModel.find({})
         const reviews = allReviews.filter(e=>e.post_id==post_id&& e._id!=id);
         let suma = 0;
-         reviews.forEach(e=> suma = suma + e.value)
+         reviews.forEach(e=> {suma = suma + (e.value?e.value:0)})
           suma = suma + value
         await postModel.findOneAndUpdate({_id:post_id}, {rating:suma/reviews.length+1})
         res.status(200).send(updateReview);
@@ -63,7 +64,7 @@ const deleteReview = async (req, res) => {
        const allReviews =await reviewModel.find({})
        const reviews = allReviews.filter(e=>e.post_id==post_id);
        let suma = 0;
-        reviews.forEach(e=> suma = suma + e.value)
+        reviews.forEach(e=>{ suma = suma + (e.value?e.value:0)})
        await postModel.findOneAndUpdate({_id:post_id}, {rating:suma/reviews.length})
        
         res.status(200).send("Review deleted")

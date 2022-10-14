@@ -67,6 +67,10 @@ const UserSchema = new mongoose.Schema({
     premium:{
         type: Boolean,
         default : false
+    },
+    idStrpe:{
+        type: String,
+        default : ""
     }
 }, {
     timestamps: true

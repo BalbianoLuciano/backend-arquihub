@@ -20,7 +20,8 @@ const sendMail = async(email, subject, html)=>{
         from:"'Arquihub' <arquihub06@gmail.com >",
         to: `${email}`,
         subject,
-        html
+        html,
+        
         // attachments:[{
         //     file:"url.txt",
         //     path:"https://arquihub-git-main-frann24.vercel.app/"

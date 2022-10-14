@@ -1,5 +1,6 @@
-const { projectModel, updateModel } = require("../models");
+const { projectModel, updateModel, usersModel } = require("../models");
 const { create } = require("../models/Storage");
+const emailer = require("../config/emailer")
 const getProjects = async (req, res) => {
   try {
     const allProjects = await projectModel.find({});
@@ -31,9 +32,10 @@ const createProject = async (req, res) => {
     });
 
 
-     const projectCreator = await usersModel.findOne({ "id": created_by })
+     const projectCreator = await usersModel.findOne({ "_id": created_by })
      const creator = projectCreator.email
-     const projectAuthors = await usersModel.find().where('_id').in(users).exec();
+     const mappedUsers = users.map((u)=> u.value)
+     const projectAuthors = await usersModel.find().where('_id').in(mappedUsers).exec();
      const authorsEmails = projectAuthors.map((author) => author.email)
      const emails = [creator, authorsEmails]
 
@@ -46,7 +48,8 @@ const createProject = async (req, res) => {
       );
     });
     const newProject = await projectModel.findById(_id)
-    emailer.sendMail(emails.flat(1), "Project Created", `<div><p>Project created \n here is your <a href = https://arquihub.vercel.app/projectDetail/${id}> link </a></p></div`)
+    emailer.sendMail(emails.flat(1), "Project Created", `<div><p>Project created \n here is your <a href = https://arquihub.vercel.app/projectDetail/${_id}> link </a></p></div`)
+    console.log(newProject);
 
     res.status(200).send(newProject);
   } catch (error) {
@@ -62,11 +65,22 @@ const updateProject = async (req, res) => {
       description,
       users
     } = req.body;
+    const project = await projectModel.findById(id)
+    console.log(project);
     await projectModel.findOneAndUpdate(id,    { 
       $set: {'description':description,'users':[] }
   });
-  const projectAuthors = await usersModel.find().where('_id').in(users).exec();
-  const authorsEmails = projectAuthors.map((author) => author.email)
+
+
+  // const created_by = project.created_by 
+  // const projectCreator = await usersModel.findOne({ "_id": created_by })
+  // const creator = projectCreator.email
+  
+  // const mappedUsers = users.map((u)=> u.value)
+  // const projectAuthors = await usersModel.find().where('_id').in(mappedUsers).exec();
+  // const authorsEmails = projectAuthors.map((author) => author.email)
+  // const emails = [creator, authorsEmails]
+
 
      await users.forEach(async (e) => {
       await projectModel.updateOne({_id:id},
@@ -75,8 +89,9 @@ const updateProject = async (req, res) => {
       );
     }); 
     const updatedProject = await projectModel.findById(id)
-    emailer.sendMail(authorsEmails.flat(1), "Project Updated", `<div><p>Project Updated
-    </p></div`)
+    // console.log(updatedProject);
+    //  emailer.sendMail(emails.flat(1), "Project Updated", `<div><p>Project Updated
+    //  </p></div`)
     res.status(200).send(updatedProject);
   } catch (error) {
     console.log(error);

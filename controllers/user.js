@@ -1,5 +1,7 @@
 const { usersModel } = require("../models");
 const emailer = require("../config/emailer")
+const bannedTemplate = require("../templates/banned")
+
 
 const getUsers = async (req, res) => {
   try {
@@ -94,15 +96,14 @@ const updateUser = async (req, res) => {
     };
 
     if(editedUser.status === "active"){
-      emailer.sendMail(editedUser.email,editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname},Your account has been reestablished!`, 
+      emailer.sendMail(editedUser.email , `Your account has been reestablished!`, 
       `${editedUser.name} Your account is now activated from the ban, welcome back!`)
       await usersModel.updateOne({_id:id}, editedUser);
       res.send(editedUser);
     }
 
     if(editedUser.status === "banned"){
-      emailer.sendMail(editedUser.email,editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account has been banned due the reports on your activity`, 
-      `${editedUser.name} Your account is now`)
+      emailer.sendMail(editedUser.email, "Banned account" , bannedTemplate)
       await usersModel.updateOne({_id:id}, editedUser);
       res.send(editedUser);
     }

@@ -7,7 +7,7 @@ const {payAccepted, subscriptionEnded} = require("../utils/templates/payment")
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY) 
 
 
-const postPaymentSubscription = async (req, res) => {
+const cancelSubscription = async (req, res) => {
 
   try {    
     
@@ -62,6 +62,6 @@ const postPaymentSubscription = async (req, res) => {
 // }
 
 module.exports = {
-  postPaymentSubscription,
+  cancelSubscription,
   //cancelSubscription
 }

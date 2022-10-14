@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router();
-const { postPaymentSubscription } = require("../controllers/payment")
+const { postPaymentSubscription, cancelSubscription } = require("../controllers/payment")
 //const { paymentModel } = require("../models")
 
 router.get("/")

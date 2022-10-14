@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const mongooseDelete = require("mongoose-delete")
 
 
-const ProductSchema = new mongoose.Schema({
+const DownloadSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref:"users",
@@ -11,6 +11,10 @@ const ProductSchema = new mongoose.Schema({
     update_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref:"updates",
+    },
+    project_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"projects",
         required: true,
     },
 
@@ -20,6 +24,6 @@ const ProductSchema = new mongoose.Schema({
 });
 
 
-ProductSchema.plugin(mongooseDelete, {overrideMethods: "all"})
+DownloadSchema.plugin(mongooseDelete, {overrideMethods: "all"})
 
-module.exports = mongoose.model("downloads", ProductSchema)
+module.exports = mongoose.model("downloads", DownloadSchema)

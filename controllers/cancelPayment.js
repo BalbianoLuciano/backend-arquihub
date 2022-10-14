@@ -11,24 +11,20 @@ const cancelSubscription = async (req, res) => {
 
   try {    
     
-    const { userId, email, payment_method } = req.body
-    const customer = await stripe.customers.create({
-      payment_method: payment_method, //viene desde el front es el result_paymentMethod.id
-      email: email,
-    invoice_settings: {
-      default_payment_method: payment_method,
-    },
+    const { email } = req.body
+    const customer = await stripe.customers.retrieve({
+      email
   });
-  //console.log(customer)
+  console.log(customer)
 
-  const subscription = await stripe.subscriptions.create({
-    customer: customer.id,
-    items: [{plan: "price_1LsHCNAfxOW2aSoAvz1i35DW"}],
-    expand: ['latest_invoice.payment_intent', 'customer'],    
-  });
+//   const subscription = await stripe.subscriptions.create({
+//     customer: customer.id,
+//     items: [{plan: "price_1LsHCNAfxOW2aSoAvz1i35DW"}],
+//     expand: ['latest_invoice.payment_intent', 'customer'],    
+//   });
   //console.log(subscription)
-  const status = subscription['latest_invoice']['payment_intent']['status']
-  const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
+  //const status = subscription['latest_invoice']['payment_intent']['status']
+  //const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
 
   // const stripeCustomer = await stripe.customers.retrieve();
   // console.log(stripeCustomer)
@@ -36,17 +32,17 @@ const cancelSubscription = async (req, res) => {
   //console.log(status)
   //console.log(client_secret)
 
-  if(status === 'succeeded'){
-    const user = await usersModel.findById(userId)
-    user.premium = true;
-    //console.log(email)
-    user.save()
-    let emailTo = customer.email;
-    emailer.sendMail(emailTo, "Bienvenido a Arquihub!", payAccepted)
-  }  
+//   if(status === 'succeeded'){
+//     const user = await usersModel.findById(userId)
+//     user.premium = true;
+//     //console.log(email)
+//     user.save()
+//     let emailTo = customer.email;
+//     emailer.sendMail(emailTo, "Bienvenido a Arquihub!", payAccepted)
+//   }  
   
-  //res.redirect('http://www.google.com/')
-  res.json({'client_secret': client_secret, 'status': status});
+  
+  //res.json({'client_secret': client_secret, 'status': status});
 
 } catch (error) {
     res.status(400).send('Credit card not valid')

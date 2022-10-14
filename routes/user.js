@@ -3,10 +3,10 @@ const router = express.Router();
 const { getUsers, createUser, updateUser, deleteUser, getUser }= require("../controllers/user")
 const {verifyToken,  isAdmin, isSuperAdmin, isMember}= require("../middlewares")
 
-router.get("/",verifyToken, isAdmin, getUsers)
+router.get("/", getUsers)
 router.get("/:id", getUser)
 router.post("/", createUser)
-router.put("/:id", updateUser)
-router.delete("/:id", deleteUser)
+router.put("/:id",verifyToken, updateUser)
+router.delete("/:id",[verifyToken,isAdmin], deleteUser)
 
 module.exports = router;

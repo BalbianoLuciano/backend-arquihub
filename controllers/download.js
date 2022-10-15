@@ -1,41 +1,31 @@
-const { reviewModel,postModel, usersModel } = require("../models")
+const { usersModel, projectModel, updateModel, downloadModel } = require("../models")
 
-const getReviews = async (req, res) => {
+/* const getDownloads = async (req, res) => {
     try {
-        const allReviews = await reviewModel.findAllData({})
-        res.status(200).send(allReviews)
-
-    } catch (error) {
-        res.status(400).send("Cant find reviews")
-    }
-}
-
-const createReview = async (req, res) => {
-    try {
-        const { value, comment, post_id, user_id} = req.body;
-        if(!value, !comment, !post_id,!user_id){
-            return res.status(400).send({error:"Missing required parameters"})
-        }
-        const allReviews =await reviewModel.find({})
-        const reviews = allReviews.filter(e=>e.post_id==post_id);
-        let suma = 0;
-        console.log(value, comment, post_id, user_id)
-         reviews.forEach(e=>{ suma = suma + (e.value?e.value:0)})
-         suma = suma + value;
-         const prom = suma/(reviews.length+1);
-         console.log(suma, reviews.length+1);
-        await postModel.findOneAndUpdate({_id:post_id},{rating:prom})
-        const newReview = {value, comment, post_id, user_id} 
-        console.log(newReview)
-        await reviewModel.create(newReview)
-        res.status(200).send(newReview)
+        const allDownloads = await reviewModel.find({})
+        res.status(200).send(allDownloads)
 
     } catch (error) {
         res.status(400).json({error:error.message})
     }
 }
+ */
+const createDownload = async (req, res) => {
+    try {
+        const {project_id, user_id, update_id} = req.body;
+        console.log(project_id, user_id, update_id)
+        if(!project_id,!user_id)return res.status(400).json({error:"Missing required parameters"})
+        await usersModel.findById(user_id)
+        await projectModel.findById(project_id)
+        if(update_id) await updateModel.findById(update_id)
+        await downloadModel.create({project_id, user_id, update_id})
+        res.status(200).json({success:"created download succesfully"})
+    } catch (error) {
+        res.status(400).json({error:error.message})
+    }
+}
 
-const updateReview = async (req, res) => {
+/* const updateReview = async (req, res) => {
     try {
       
         const { id } = req.params;
@@ -55,8 +45,8 @@ const updateReview = async (req, res) => {
         res.status(400).json({error:error.message})
     }
 }
-
-const deleteReview = async (req, res) => {
+ */
+/* const deleteReview = async (req, res) => {
     try {
         const { id } = req.params;
         const {post_id} = await reviewModel.findById(id)
@@ -76,10 +66,10 @@ const deleteReview = async (req, res) => {
     }
 }
 
-
-const getReview = async (req, res) => {
+ */
+/* const getDownload = async (req, res) => {
     try {
-        const { id, mood } = req.params;
+        const { id} = req.params;
 
         if(id.length < 24){
             return res.status(400).send("No searchable id")
@@ -109,7 +99,7 @@ const getReview = async (req, res) => {
     } catch (error) {
         res.status(400).json({error:error.message})
     }
-}
+} */
 
 
-module.exports = { getReviews, createReview, updateReview, deleteReview, getReview }
+module.exports = { /* getDownloads, */ createDownload,/*  updateDownload, deleteDownload, getDownload */ }

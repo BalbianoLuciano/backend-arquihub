@@ -1,4 +1,5 @@
-const { projectModel, updateModel, usersModel } = require("../models");
+const { projectModel, updateModel, downloadModel, usersModel } = require("../models");
+
 const { create } = require("../models/Storage");
 const emailer = require("../config/emailer")
 const getProjects = async (req, res) => {
@@ -149,12 +150,13 @@ const getProject = async (req, res) => {
     }
     ])
     const updates = await updateModel.findAllData({})
+    const downloads = await downloadModel.find({project_id:id}).populate("user_id").populate("update_id")
 /*     const updates2  = await updateModel.populate(updates, {path: "users"})
     console.log(updates2.storage) */
     const allProjects2 = await projectModel.populate(allProjects, {path: "users"});
     const project = allProjects2.find(e=>e._id==id);
     const update = updates.filter(e=>e.project_id==id);
-    res.status(200).send({...project,updates:update});
+    res.status(200).send({...project,updates:update,downloads});
   } catch (err) {
     res.status(404).send({err: err.message});
   }

@@ -1,10 +1,10 @@
 const express = require("express")
 const router = express.Router();
-const { postPaymentSubscription, cancelSubscription } = require("../controllers/payment")
+const { cancelSubscription } = require("../controllers/cancelPayment")
 //const { paymentModel } = require("../models")
 
 router.get("/")
-router.post("/", postPaymentSubscription)
+router.post("/", cancelSubscription)
 router.put("/")
 router.delete("/")
 

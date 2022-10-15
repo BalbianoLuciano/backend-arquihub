@@ -11,11 +11,20 @@ const cancelSubscription = async (req, res) => {
 
   try {    
     
-    const { email } = req.body
-    const customer = await stripe.customers.retrieve({
-      email
-  });
-  console.log(customer)
+    const { userId } = req.body
+    
+    const user = await usersModel.findById(userId)
+
+    const stripeCustomer = await stripe.customers.retrieve(user.idStrpe, {expand: ['subscriptions']})
+
+   
+    const subscriptionId = await stripe.subscriptions.update(stripeCustomer.subscriptions.data[0].id, {cancel_at_period_end: true})
+
+    //const cancel_at_period_end = subscriptionId['cancel_at_period_end']
+    console.log(subscriptionId)
+
+    //console.log(stripeCustomer.subscriptions.data[0].id)
+    //console.log(cancelSubscription)
 
 //   const subscription = await stripe.subscriptions.create({
 //     customer: customer.id,
@@ -43,9 +52,11 @@ const cancelSubscription = async (req, res) => {
   
   
   //res.json({'client_secret': client_secret, 'status': status});
+  //res.json(stripeCustomer)
+  res.json(subscriptionId)
 
 } catch (error) {
-    res.status(400).send('Credit card not valid')
+    res.status(400).send('Error Subscription Cancel')
   }
 };
 

@@ -1,7 +1,7 @@
-const { postModel,reviewModel, usersModel} = require("../models")
-const {verifyToken}= require("../middlewares/auth.jwt")
+const { postModel, reviewModel, usersModel } = require("../models")
+const { verifyToken } = require("../middlewares/auth.jwt")
 const emailer = require("../config/emailer")
-const {commentedPost, posted, postUpdated} = require("../utils/templates/post")
+const { commentedPost, posted, postUpdated } = require("../utils/templates/post")
 
 
 const getPosts = async (req, res) => {
@@ -10,7 +10,7 @@ const getPosts = async (req, res) => {
         res.send(allPosts)
 
     } catch (err) {
-        res.status(400).send({err:err.message})
+        res.status(400).send({ err: err.message })
     }
 }
 
@@ -29,12 +29,12 @@ const createPost = async (req, res) => {
             image,
             authors,
             additional_data,
-            rating
+            rating,
         } = req.body;
 
         if (!title || !description || !project_type) {
             return res.status(400).send("Missing required parameters")
-        }  
+        }
 
         const newPost = {
             title,
@@ -49,30 +49,37 @@ const createPost = async (req, res) => {
             year,
             bathrooms,
             additional_data,
-            rating
+            rating,
         }
-        console.log(newPost)
+
+        const postCreator = await usersModel.findOne({ "id": created_by })
+        const creator = postCreator.email
+        const postAuthors = await usersModel.find().where('_id').in(authors).exec();
+        const authorsEmails = postAuthors.map((author) => author.email)
+        const emails = [creator, authorsEmails]
+
+        // console.log(newPost)
         const createPost = await postModel.create(newPost)
 
-        const {id} = createPost;
-         authors.forEach(async (e) => {
-            console.log(e)
-            await postModel.updateOne({_id:id},
-              { $push: { authors: e.value } },
-              { new: true, useFindAndModify: false }
+        const { id } = createPost;
+        authors.forEach(async (e) => {
+            // console.log(e)
+            await postModel.updateOne({ _id: id },
+                { $push: { authors: e.value } },
+                { new: true, useFindAndModify: false }
             );
-            await usersModel.updateOne({_id:e.value},
+            await usersModel.updateOne({ _id: e.value },
                 { $push: { posts: id } },
                 { new: true, useFindAndModify: false }
-              );
-          });
-          const newPostF = await postModel.findById(id)
-          //necesito que llegue el mail del user por authors o createdBy
-          //   emailer.sendMail(authors, "Post Created!", posted)
+            );
+        });
 
-          res.status(200).send(newPostF);
+        const newPostF = await postModel.findById(id)
+        emailer.sendMail(emails.flat(1), "Post Created", `<div><p>Post created \n here is your <a href = https://arquihub.vercel.app/postDetail/${id}> link </a></p></div`)
+
+        res.status(200).send(newPostF);
     } catch (err) {
-        res.status(400).send({err:err.message})
+        res.status(400).send({ err: err.message })
     }
 }
 
@@ -107,9 +114,15 @@ const updatePost = async (req, res) => {
             rating
         }
 
+        const postCreator = await usersModel.findOne({ "id": created_by })
+        const creator = postCreator.email
+        const postAuthors = await usersModel.find().where('_id').in(authors).exec();
+        const authorsEmails = postAuthors.map((author) => author.email)
+        const emails = [creator, authorsEmails]
+
         await postModel.findOneAndUpdate(id, updatePost)
-           //necesito que llegue el mail del user por authors o createdBy
-          //   emailer.sendMail(authors, "Post Created!", postUpdated)
+        emailer.sendMail(emails.flat(1), `${title} has been updated`, `<div><p>Post Updated \n check it out <a href = https://arquihub.vercel.app/postDetail/${id}> here </a></p></div`)
+
         res.send(updatePost)
 
     } catch (error) {
@@ -123,7 +136,7 @@ const deletePost = async (req, res) => {
         await postModel.deleteOne({ _id: id })
         res.send("Post deleted")
     } catch (err) {
-        res.status(400).send({err:err.message})
+        res.status(400).send({ err: err.message })
     }
 }
 
@@ -133,37 +146,37 @@ const getPost = async (req, res) => {
         const { id } = req.params;
         const allPosts = await postModel.aggregate([
             {
-              $lookup: {
-                from: "projects",
-                localField: "project_id",
-                foreignField: "_id",
-                as: "project",
-              },
+                $lookup: {
+                    from: "projects",
+                    localField: "project_id",
+                    foreignField: "_id",
+                    as: "project",
+                },
             },
             {
                 $lookup: {
-                  from: "users",
-                  localField: "created_by",
-                  foreignField: "_id",
-                  as: "created_by_data",
+                    from: "users",
+                    localField: "created_by",
+                    foreignField: "_id",
+                    as: "created_by_data",
                 },
-              },
-          ]);
-          const post = allPosts.find(e=>e._id==id); 
-             const postReviews= await reviewModel.aggregate([{
-                $lookup: {
-                  from: "users",
-                  localField: "user_id",
-                  foreignField: "_id",
-                  as: "user_data",
-                },
-              },]);
-              const reviews = postReviews.filter(e=>e.post_id==id)
-            const userPost = await postModel.populate(post, {path:"authors"}); 
-/*            const getPost ={...userPost ,reviews:reviews }  */
-            res.status(200).send(userPost);
+            },
+        ]);
+        const post = allPosts.find(e => e._id == id);
+        const postReviews = await reviewModel.aggregate([{
+            $lookup: {
+                from: "users",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "user_data",
+            },
+        },]);
+        const reviews = postReviews.filter(e => e.post_id == id)
+        const userPost = await postModel.populate(post, { path: "authors" });
+        /*            const getPost ={...userPost ,reviews:reviews }  */
+        res.status(200).send(userPost);
     } catch (err) {
-        res.status(400).send({err:err.message})
+        res.status(400).send({ err: err.message })
     }
 }
 

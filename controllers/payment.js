@@ -33,6 +33,14 @@ const postPaymentSubscription = async (req, res) => {
   // const stripeCustomer = await stripe.customers.retrieve();
   // console.log(stripeCustomer)
 
+  if(status === 'succeeded'){
+      const user = await usersModel.findById(userId)
+      user.premium = true;
+      //console.log(email)
+      user.save()
+      let emailTo = customer.email;
+      emailer.sendMail(emailTo, "Payment confirmed", payAccepted)
+    }  
   //console.log(status)
   //console.log(client_secret)
 

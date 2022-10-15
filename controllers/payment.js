@@ -18,24 +18,24 @@ const postPaymentSubscription = async (req, res) => {
     invoice_settings: {
       default_payment_method: payment_method,
     },
+    expand:['subscription']
   });
-  //console.log(customer)
+  console.log(customer)
 
   const subscription = await stripe.subscriptions.create({
     customer: customer.id,
     items: [{plan: "price_1LsHCNAfxOW2aSoAvz1i35DW"}],
     expand: ['latest_invoice.payment_intent', 'customer'],    
   });
-  //console.log(subscription)
+  console.log(subscription)
   const status = subscription['latest_invoice']['payment_intent']['status']
   const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
 
-  // const stripeCustomer = await stripe.customers.retrieve();
-  // console.log(stripeCustomer)
-
+  
   if(status === 'succeeded'){
       const user = await usersModel.findById(userId)
       user.premium = true;
+      user.idStrpe = customer.id
       //console.log(email)
       user.save()
       let emailTo = customer.email;

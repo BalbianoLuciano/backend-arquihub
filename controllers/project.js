@@ -39,6 +39,10 @@ const createProject = async (req, res) => {
       visibility
     });
     const {_id} = createProject;
+    await projectModel.updateOne({_id:_id},
+      { $push: { users: created_by } },
+      { new: true, useFindAndModify: false }
+    );
     await users.forEach(async (e) => {
       await projectModel.updateOne({_id:_id},
         { $push: { users: e.value } },

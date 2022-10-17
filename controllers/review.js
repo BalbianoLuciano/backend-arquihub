@@ -41,7 +41,7 @@ const updateReview = async (req, res) => {
         const { id } = req.params;
         const { value, comment} = req.body;
         console.log(id,value,comment)
-        await reviewModel.updateOne({_id:id}, {value:value,comment:comment})
+        await reviewModel.updateOne({_id:id}, {value:value,comment:comment, modify:true})
         const {post_id} = await reviewModel.findById(id)
         const allReviews =await reviewModel.find({})
         const reviews = allReviews.filter(e=>e.post_id.equals(post_id)&& e._id!=id);

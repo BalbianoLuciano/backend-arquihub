@@ -13,8 +13,9 @@ const getProjects = async (req, res) => {
           as: "pdf_initial_file",
         },
       }
-    ]);
-    res.status(200).send(allProjects);
+    ])
+    const projectsWPopulate = await projectModel.populate(allProjects,{path:"created_by"})
+    res.status(200).send(projectsWPopulate);
   } catch (error) {
     console.log(error);
   }

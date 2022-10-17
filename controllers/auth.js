@@ -26,7 +26,11 @@ const signUp = async (req, res) => {
         } = req.body
 
         const findUser = await usersModel.find({ email })
-        if (!findUser.length) {
+        const findUserNick = await usersModel.find({ nickname })
+        if(findUser.length && findUserNick.length) return res.status(400).json({errorMail:"Mail already registered", errorNick:"Nickname already registered"})
+        else if(findUser.length) return res.status(400).send({errorMail:"Email already registered"})
+        else if(findUserNick.length) return res.status(400).send({errorNick:"Nickname already registered"})
+
             const newUser = {
                 name,
                 lastname,
@@ -44,8 +48,7 @@ const signUp = async (req, res) => {
                 location,
                 premium
             }
-
-            console.log(newUser)
+            
             const addUser = await usersModel.create(newUser)
             const token = sign({ id: addUser._id }, `${SECRET}`, { expiresIn: 86400 })
             const userId = addUser._id
@@ -63,13 +66,10 @@ const signUp = async (req, res) => {
             }
             res.send({ token, userId, userType, userAvatar, userMail, userName, isPremium })
 
-        } else {
 
-            return res.status(400).send({ error: "User already registered" })
-        }
     } catch (error) {
         console.log(error)
-        return res.status(400).send({ error })
+        return res.status(400).send({ error:error.message })
     }
 }
 

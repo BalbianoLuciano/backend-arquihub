@@ -1,36 +1,39 @@
-const express = require("express")
+const express = require("express");
 const router = express.Router();
-const { usersModel } = require("../models")
-const {signUp, logIn, googleLogin} = require("../controllers/auth");
-const emailer = require("../config/emailer")
+const { usersModel } = require("../models");
+const { signUp, logIn, googleLogin } = require("../controllers/auth");
+const emailer = require("../config/emailer");
 const jwt = require("jsonwebtoken");
 const { SECRET } = require("../config/config");
-const JWT_SECRET = "some super secret"
-const {encryptPassword} = require("../models/User")
-const resetTemplate = require("../templates/resetPass")
+const JWT_SECRET = "some super secret";
+const { encryptPassword } = require("../models/User");
+const resetTemplate = require("../templates/resetPass");
 
-router.post("/signup", signUp)
+router.post("/signup", signUp);
 
-router.post("/login", logIn)
+router.post("/login", logIn);
 
-router.post("/google", googleLogin)
+router.post("/google", googleLogin);
 
 router.post("/forgotPassword", async (req, res, next) => {
-    const { email } = req.body;
-
-    const findUser = await usersModel.findOne({ email })
-    if (!findUser) return res.send("User Not registered")
+  const { email } = req.body;
+  try {
+    const findUser = await usersModel.findOne({ email });
+    if (!findUser)   return res.status(200).json({errEmail:"User Not registered"})
 
     //user exist send link for 15 minutes
-    const secret = JWT_SECRET + findUser.password
+    const secret = JWT_SECRET + findUser.password;
     const payload = {
-        email: findUser.email,
-        id: findUser._id
-    }
-    const token = jwt.sign(payload, secret, { expiresIn: "15m" })
+      email: findUser.email,
+      id: findUser._id,
+    };
+    const token = jwt.sign(payload, secret, { expiresIn: "15m" });
 
-    const link = `http://localhost:3000/resetPassword/${findUser._id}/${token}`
-    emailer.sendMail(email, "Forgotten password link", ` <!DOCTYPE html>
+    const link = `http://localhost:3000/resetPassword/${findUser._id}/${token}`;
+    emailer.sendMail(
+      email,
+      "Forgotten password link",
+      ` <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -54,35 +57,42 @@ router.post("/forgotPassword", async (req, res, next) => {
 
 </body>
 </html>
- `  
-  )
-    res.send("Password Reset Link sent to your email")
-})
+ `
+    );
+    res.status(200).json({ success: "Password Reset Link sent to your email" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 
+router.post("/resetPassword/:id/:token", async (req, res, next) => {
+  //    const {} = req.params
+  const { id, token, email, password, password2 } = req.body;
+  try {
+    const findUser = await usersModel.findOne({ email });
+    if (id !== findUser.id) return res.send("Invalid id");
+  
+    const newToken = jwt.sign({ id: findUser._id }, SECRET, { expiresIn: 86400 });
+    if (findUser.password){
+        const matches = await usersModel.comparePassword(password, findUser.password)
+        if (matches) return res.status(200).send({ errPassword: "The password cannot be the same as the previous one" })
+    }
 
-router.post("/resetPassword/:id/:token", async(req,res,next)=>{
-//    const {} = req.params
-    const {id, token, email,  password, password2}= req.body
-    const findUser = await usersModel.findOne({email})
-    if(id !== findUser.id)return res.send("Invalid id")
-   
-
-    const newToken = jwt.sign({id: findUser._id}, SECRET, {expiresIn: 86400})  
-
-    const updated =  await usersModel.findByIdAndUpdate(id,{password: await usersModel.encryptPassword(password)})
-    console.log(updated);
-
-
-    emailer.sendMail(email, `Password reestablished`, resetTemplate)
-
+    const updated = await usersModel.findByIdAndUpdate(id, {
+      password: await usersModel.encryptPassword(password),
+    });
+  
+    emailer.sendMail(email, `Password reestablished`, resetTemplate);
+  
     // `<div>
     //     <p>You can now login with your new password</p>
     //     <p> http://localhost:3000/home  </p>
     // </div`)
-
-    res.send(updated)
-   
-})
-
+  
+    res.status(200).send({success:"Password updated succesfully"});
+  } catch (error) {
+    return res.status(400).json({error:error.message})
+  }
+});
 
 module.exports = router;

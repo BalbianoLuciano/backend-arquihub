@@ -56,12 +56,21 @@ const createProject = async (req, res) => {
       { $push: { users: created_by } },
       { new: true, useFindAndModify: false }
     );
+    await usersModel.updateOne({_id:created_by},
+      { $push: { projects: _id } },
+      { new: true, useFindAndModify: false }
+    );
     await users.forEach(async (e) => {
       await projectModel.updateOne({_id:_id},
         { $push: { users: e.value } },
         { new: true, useFindAndModify: false }
       );
+      await usersModel.updateOne({_id:e.value},
+        { $push: { projects: _id } },
+        { new: true, useFindAndModify: false }
+      );
     });
+
     const newProject = await projectModel.findById(_id)
     emailer.sendMail(emails.flat(1), "Project Created", `<div><p>Project created \n here is your <a href = https://arquihub.vercel.app/projectDetail/${_id}> link </a></p></div`)
     console.log(newProject);

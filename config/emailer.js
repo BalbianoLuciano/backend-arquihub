@@ -1,36 +1,35 @@
 const nodemailer = require("nodemailer")
-const template = require("../utils/templates/auth") 
+const nodemailerSendgrid = require("nodemailer-sendgrid")
+const { SENDGRID_APIKEY } = process.env
+
+const createTrans=()=>{
+
+    const transport = nodemailer.createTransport(
+        nodemailerSendgrid({
+            apiKey: SENDGRID_APIKEY
+        })
+    )
+
+      return transport
+    }
 
 
-const createTrans =()=>{
-    const transport = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true, 
-        auth: {
-          user: "arquihub06@gmail.com", 
-          pass: "xypnwvwtazgfesmo", 
-        },
-        tls: {
-            rejectUnauthorized: false
-        }
-    })
-    return transport
-}
-
-
-  const sendMail = async(user, subject, template)=>{
+const sendMail = async(email, subject, html)=>{
     const transporter = createTrans()
     const info = await transporter.sendMail({
-        from: "arquihub@gmail.com",
-        to: user,
+        from:"'Arquihub' <arquihub06@gmail.com >",
+        to: `${email}`,
         subject,
-        html:template
-
+        html,
+        
+        // attachments:[{
+        //     file:"url.txt",
+        //     path:"https://arquihub-git-main-frann24.vercel.app/"
+        // }]
     })
-    console.log("Message sent :", info.messageId);
+    console.log("Message sent ", info.messageId)
+
     return
 }
 
-
-exports.sendMail=(user, subject, template)=>sendMail(user, subject, template)
+exports.sendMail=(email, subject, html)=> sendMail(email, subject, html)

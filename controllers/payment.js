@@ -15,9 +15,10 @@ const postPaymentSubscription = async (req, res) => {
     const customer = await stripe.customers.create({
       payment_method: payment_method, //viene desde el front es el result_paymentMethod.id
       email: email,
-    invoice_settings: {
+      invoice_settings: {
       default_payment_method: payment_method,
     },
+    expand:['subscription']
   });
   //console.log(customer)
 
@@ -26,26 +27,23 @@ const postPaymentSubscription = async (req, res) => {
     items: [{plan: "price_1LsHCNAfxOW2aSoAvz1i35DW"}],
     expand: ['latest_invoice.payment_intent', 'customer'],    
   });
-  //console.log(subscription)
+  console.log(subscription)
   const status = subscription['latest_invoice']['payment_intent']['status']
   const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
 
-  // const stripeCustomer = await stripe.customers.retrieve();
-  // console.log(stripeCustomer)
-
+  
+  if(status === 'succeeded'){
+      const user = await usersModel.findById(userId)
+      user.premium = true;
+      user.idStrpe = customer.id
+      //console.log(email)
+      user.save()
+      let emailTo = customer.email;
+      emailer.sendMail(emailTo, "Payment confirmed", payAccepted)
+    }  
   //console.log(status)
   //console.log(client_secret)
-
-  if(status === 'succeeded'){
-    const user = await usersModel.findById(userId)
-    user.premium = true;
-    //console.log(email)
-    user.save()
-    let emailTo = customer.email;
-    emailer.sendMail(emailTo, "Bienvenido a Arquihub!", payAccepted)
-  }  
-  
-  //res.redirect('http://www.google.com/')
+      
   res.json({'client_secret': client_secret, 'status': status});
 
 } catch (error) {
@@ -53,13 +51,7 @@ const postPaymentSubscription = async (req, res) => {
   }
 };
 
-// const cancelSubscription = async (req, res) => {
-//   const { email } = req.body
 
-//   const stripeCustomer = await stripe.customers.retrieve();
-//   console.log(stripeCustomer)
-
-// }
 
 module.exports = {
   postPaymentSubscription,

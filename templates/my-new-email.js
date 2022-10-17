@@ -1,12 +1,20 @@
-const template =(name)=>{
-    return 
+const images = require("./images")
+const {bee,
+	HBAY_YOGAPOSE_3_BG,
+	HBAY_YOGAPOSE_4_BG,
+	HBAY_YOGAPOSE_5_BG,
+	HBAY_YOGAPOSE_6_BG,
+}= images
 
-    `
-    <!DOCTYPE html>
+console.log(images);
+
+const template = 
+
+`<!DOCTYPE html>
 
 <html lang="en" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-<title></title>
+<title>ArquiTemplate</title>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]-->
@@ -107,7 +115,7 @@ const template =(name)=>{
 <td class="pad" style="vertical-align: middle; color: #000000; font-family: inherit; font-size: 14px; text-align: center; padding-top: 40px; padding-bottom: 30px;">
 <table align="center" cellpadding="0" cellspacing="0" class="alignment" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 <tr>
-<td style="vertical-align: middle; text-align: center; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px;"><a href="https://www.example.com" style="text-decoration: none;" target="_self"><img align="center" alt="Your Logo" class="icon" height="64" src="images/Screen_Shot_2022-10-06_at_14.03.18-removebg-preview.png" style="display: block; height: auto; margin: 0 auto; border: 0;" width="220"/></a></td>
+<td style="vertical-align: middle; text-align: center; padding-top: 5px; padding-bottom: 5px; padding-left: 5px; padding-right: 5px;"><a href="https://arquihub-git-main-frann24.vercel.app/home" style="text-decoration: none;" target="_self"><img align="center" alt="Your Logo" class="icon" height="64" src="images/Screen_Shot_2022-10-06_at_14.03.18-removebg-preview.png" style="display: block; height: auto; margin: 0 auto; border: 0;" width="220"/></a></td>
 </tr>
 </table>
 </td>
@@ -141,7 +149,7 @@ const template =(name)=>{
 <td class="pad" style="padding-bottom:60px;padding-left:20px;padding-right:20px;padding-top:20px;">
 <div style="font-family: sans-serif">
 <div class="" style="font-size: 12px; mso-line-height-alt: 14.399999999999999px; color: #000000; line-height: 1.2; font-family: Montserrat, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;">
-<p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:16px;">Thank you for registering to <span style="font-size:20px;"><strong>ARQUI</strong>HUB.</span></span></p>
+<!-- <p style="margin: 0; font-size: 14px; text-align: center; mso-line-height-alt: 16.8px;"><span style="font-size:16px;">Thank you for joining <span style="font-size:20px;"><strong>ARQUI</strong>HUB.</span></span></p> -->
 </div>
 </div>
 </td>
@@ -589,5 +597,5 @@ const template =(name)=>{
 </table><!-- End -->
 </body>
 </html>
-    `
-}
+`
+module.exports = template

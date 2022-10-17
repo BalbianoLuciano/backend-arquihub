@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const { SECRET } = require("../config/config");
 const JWT_SECRET = "some super secret"
 const {encryptPassword} = require("../models/User")
+const resetTemplate = require("../templates/resetPass")
 
 router.post("/signup", signUp)
 
@@ -29,13 +30,32 @@ router.post("/forgotPassword", async (req, res, next) => {
     const token = jwt.sign(payload, secret, { expiresIn: "15m" })
 
     const link = `http://localhost:3000/resetPassword/${findUser._id}/${token}`
-    emailer.sendMail(email.trimRight(), "Forgotten password redirect",
-        `<div>
-    <p>Link to reset password</p>
-    <p> ${link} </p>
-    </div`)
+    emailer.sendMail(email, "Forgotten password link", ` <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+</head>
+<body>
+    <p style="color: black; font-family: sans-serif;">  <strong>ARQUI</strong>HUB</p>
+    <p style="color: black; font-family: sans-serif;"> Hi, here is your link to reestablish your forgotten password:</p>
+    <p style="color: black; font-family: sans-serif ; line-height: 1.6"> <b><a href= ${link}> Reset Password</a></b></br>
+        <br>
+        Explore everything we have for you: 
+    </br> 
+   
+        <a href="https://arquihub-git-main-frann24.vercel.app/home" style=" font-family: sans-serif ; line-height: 1.6"> Go take a look!</a>
+    </br>
+</br>
+        <p style=" font-family: sans-serif ; line-height: 1.6"> Any questions? </p> 
+        <a href="mailto: arquihub06@gmail.com? subject=subject text" style="font-family: sans-serif ; line-height: 1.6"> Contact us </a>
 
-
+</body>
+</html>
+ `  
+  )
     res.send("Password Reset Link sent to your email")
 })
 
@@ -53,11 +73,12 @@ router.post("/resetPassword/:id/:token", async(req,res,next)=>{
     console.log(updated);
 
 
-    emailer.sendMail(email.trimRight(), "Reestablished password!",
-    `<div>
-        <p>You can now login with your new password</p>
-        <p> http://localhost:3000/home  </p>
-    </div`)
+    emailer.sendMail(email, `Password reestablished`, resetTemplate)
+
+    // `<div>
+    //     <p>You can now login with your new password</p>
+    //     <p> http://localhost:3000/home  </p>
+    // </div`)
 
     res.send(updated)
    

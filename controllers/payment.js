@@ -1,4 +1,4 @@
-const { usersModel } = require("../models");
+const { usersModel, paymentModel } = require("../models");
 const Stripe = require("stripe");
 const nodemailer = require("nodemailer");
 const emailer = require("../config/emailer");
@@ -6,6 +6,16 @@ const {payAccepted, subscriptionEnded} = require("../utils/templates/payment")
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY) 
 
+
+const getPayment = async (req, res) =>{
+  try {
+    const allPayment = await paymentModel.find({})
+    res.status(200).json(allPayment)
+
+} catch (error) {
+    res.status(400).send("No payment found")
+}
+}
 
 const postPaymentSubscription = async (req, res) => {
 
@@ -55,5 +65,5 @@ const postPaymentSubscription = async (req, res) => {
 
 module.exports = {
   postPaymentSubscription,
-  //cancelSubscription
+  getPayment
 }

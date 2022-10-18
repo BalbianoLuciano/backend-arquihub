@@ -1,10 +1,9 @@
-const { reviewReportModel, usersModel } = require("../models")
+const { reviewReportModel, usersModel,reviewModel } = require("../models")
 
 const getReviewReports = async (req, res) => {
     try {
-        const allReports = await reviewReportModel.find({}).populate("user_id").populate("review_id").populate("admin_id")
-        res.status(200).send(allReports)
-
+        const allReports = await reviewReportModel.find({}).populate("user_id").populate({path:"review_id",populate:{path:"user_id"}}).populate("admin_id")
+      res.status(200).send(allReports)
     } catch (error) {
         res.status(400).json({error:error.message})
     }

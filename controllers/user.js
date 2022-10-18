@@ -137,6 +137,14 @@ const getUser = async (req, res) => {
     const allUsers = await usersModel.aggregate([
       {
         $lookup: {
+          from: "projects",
+          localField: "_id",
+          foreignField: "created_by",
+          as: "projects_created",
+        },
+      },
+      {
+        $lookup: {
           from: "payments",
           localField: "_id",
           foreignField: "user_id",

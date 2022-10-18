@@ -11,7 +11,7 @@ const cancelSubscription = async (req, res) => {
 
   try {    
     
-    const { userId } = req.body
+    const { userId, emailUser } = req.body
     
     const user = await usersModel.findById(userId)
 
@@ -20,6 +20,7 @@ const cancelSubscription = async (req, res) => {
    
     const subscriptionId = await stripe.subscriptions.update(stripeCustomer.subscriptions.data[0].id, {cancel_at_period_end: true})
 
+    emailer.sendMail(emailUser, "Subscription Cancel", subscriptionEnded)
     
     //console.log(subscriptionId)
 

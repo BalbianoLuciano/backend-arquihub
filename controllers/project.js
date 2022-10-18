@@ -87,12 +87,11 @@ const updateProject = async (req, res) => {
     const { id } = req.params;
     const { 
       description,
-      users
     } = req.body;
     const project = await projectModel.findById(id)
     console.log(project);
     await projectModel.findOneAndUpdate(id,    { 
-      $set: {'description':description,'users':[] }
+      $set: {'description':description}
   });
 
 
@@ -105,13 +104,6 @@ const updateProject = async (req, res) => {
   // const authorsEmails = projectAuthors.map((author) => author.email)
   // const emails = [creator, authorsEmails]
 
-
-     await users.forEach(async (e) => {
-      await projectModel.updateOne({_id:id},
-        { $push: { users: e } },
-        { new: true, useFindAndModify: false }
-      );
-    }); 
     const updatedProject = await projectModel.findById(id)
     // console.log(updatedProject);
     //  emailer.sendMail(emails.flat(1), "Project Updated", `<div><p>Project Updated

@@ -1,4 +1,4 @@
-const { usersModel } = require("../models");
+const { usersModel, paymentModel } = require("../models");
 const Stripe = require("stripe")
 const nodemailer = require("nodemailer");
 const { USER_MAIL, PASS_MAIL, SIGN_SECRET, STRIPE_SECRET_KEY } = process.env;
@@ -27,7 +27,7 @@ const postWebhooks = async (request, response) => {
     event = await stripe.webhooks.constructEventAsync(request.body, sig, endpointSecret);
     //console.log(event)
     subscription = event.data.object;
-    console.log(subscription)
+    //console.log(subscription)
     
   } catch (err) {
     response.status(400).send(`Webhook Error: ${err.message}`);
@@ -36,15 +36,39 @@ const postWebhooks = async (request, response) => {
   
   // Handle the event
   switch (event.type) {       
-       
+    case 'customer.subscription.created':
+      subscription = event.data.object;
+      const idCustomerStripe = subscription.customer
+      const idSubscriptionStripe = subscription.id
+      const newPayment = { idCustomerStripe, idSubscriptionStripe}
+
+      const newPay = await paymentModel.create(newPayment)
+
+      console.log(newPay)
+      
+
+      //const user = await usersModel.findOne({idStrpe:subscription.customer})
+      // Then define and call a function to handle the event customer.subscription.created
+      break;   
     case "customer.subscription.deleted":
       subscription = event.data.object;
-      console.log(subscription.customer)      
+      
+    
+      try{        
       const user = await usersModel.findOne({idStrpe:subscription.customer})
       user.premium = false;
       user.save()
-      //let emailTo = customer.email;
-      //emailer.sendMail(emailTo, "Payment confirmed", payAccepted)
+
+      const subscriptionDb = await paymentModel.findOne({idCustomerStripe:subscription.customer})
+      subscriptionDb.active = false;
+      subscriptionDb.save()
+      
+      response.send("Cancel OK")
+                
+        
+      } catch(error){
+        response.status(404).send("hubo un error en la cancelacion")
+      }
       
       // Then define and call a function to handle the event customer.subscription.deleted
       break;

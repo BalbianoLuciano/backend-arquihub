@@ -1,5 +1,5 @@
-const { updateModel } = require("../models")
-
+const { updateModel, usersModel, projectModel } = require("../models")
+const emailer = require("../config/emailer")
 
 const getUpdates = async (req, res) => {
     try {
@@ -13,13 +13,24 @@ const getUpdates = async (req, res) => {
 
 const createUpdate = async (req, res) => { //llegan title, description por body 
     try { 
-        const { title, comments, project_id, user_id, storage_id } = req.body;
+        const { title, comments, project_id, user_id, storage_id, users } = req.body;
 
         if(!title || !comments || !project_id || !user_id || !storage_id){
             res.status(400).send("Missing fields to complete")
         } else {
         const newUpdate = { title, comments, project_id, user_id, storage_id}
+        
+        const user = await usersModel.findById(user_id)
+        const creator = user.email
+        const project = await projectModel.findOne({id: project_id})
+        const projectTitle = project.title
+        const collabs = users.map((u)=>u.email)
+ 
+        const emails = [creator, collabs]
+            
+            console.log(emails.flat(1));
         await updateModel.create(newUpdate)
+        emailer.sendMail(emails.flat(1), `New changes in ${projectTitle}`, `<div> ${projectTitle} had recent changes, check out  <a href=https://arquihub.vercel.app/projectDetail/${project_id}> here </a> </div>`)
         res.status(200).send(newUpdate)
         }
     } catch (error) {

@@ -1,5 +1,7 @@
 const { usersModel } = require("../models");
-const {sendEmail} = require("../config/emailer")
+const emailer = require("../config/emailer")
+const bannedTemplate = require("../templates/banned")
+
 
 const getUsers = async (req, res) => {
   try {
@@ -93,8 +95,27 @@ const updateUser = async (req, res) => {
       avatar
     };
 
-    await usersModel.updateOne({_id:id}, editedUser);
-    res.send(editedUser);
+    if(editedUser.status === "active"){
+      emailer.sendMail(editedUser.email , `Your account has been reestablished!`, 
+      `${editedUser.name} Your account is now activated from the ban, welcome back!`)
+      await usersModel.updateOne({_id:id}, editedUser);
+      res.send(editedUser);
+    }
+
+    if(editedUser.status === "banned"){
+      emailer.sendMail(editedUser.email, "Banned account" , bannedTemplate)
+      await usersModel.updateOne({_id:id}, editedUser);
+      res.send(editedUser);
+    }
+
+    if(editedUser.status === "inactive"){
+      emailer.sendMail(editedUser.email, editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account is now inactive`, 
+      `${editedUser.name} Your account is now off, comeback anytime!`)
+      await usersModel.updateOne({_id:id}, editedUser);
+      res.send(editedUser);
+    }
+
+
   } catch (error) {
     res.status(400).json({error:error.message});
   }
@@ -114,6 +135,14 @@ const getUser = async (req, res) => {
   try {
     const { id } = req.params;
     const allUsers = await usersModel.aggregate([
+      {
+        $lookup: {
+          from: "projects",
+          localField: "_id",
+          foreignField: "created_by",
+          as: "projects_created",
+        },
+      },
       {
         $lookup: {
           from: "payments",

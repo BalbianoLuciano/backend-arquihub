@@ -1,6 +1,7 @@
-const registered = (name)=>{
-    return `
-    <!DOCTYPE html>
+const registerTemplate=
+
+`
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +11,7 @@ const registered = (name)=>{
 </head>
 <body>
     <p style="color: black; font-family: sans-serif;">  <strong>ARQUI</strong>HUB</p>
-    <p style="color: black; font-family: sans-serif;"> Thank you ${name} for creating your account with us.</p>
+    <p style="color: black; font-family: sans-serif;"> Thank you for joining our community!.</p>
 
     <p style="color: black; font-family: sans-serif ; line-height: 1.6"> We are happy to have you here. </br>
         Explore everything we have for you: 
@@ -38,6 +39,7 @@ const registered = (name)=>{
   
 
 </body>
-</html>
-    `
-}
+</html>`
+
+
+module.exports = registerTemplate

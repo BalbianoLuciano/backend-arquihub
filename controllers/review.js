@@ -40,19 +40,19 @@ const updateReview = async (req, res) => {
       
         const { id } = req.params;
         const { value, comment} = req.body;
-        const updateReview = { value, comment, post_id}
-        await reviewModel.findOneAndUpdate(id,  updateReview )
+        console.log(id,value,comment)
+        await reviewModel.updateOne({_id:id}, {value:value,comment:comment, modify:true})
         const {post_id} = await reviewModel.findById(id)
         const allReviews =await reviewModel.find({})
-        const reviews = allReviews.filter(e=>e.post_id==post_id&& e._id!=id);
+        const reviews = allReviews.filter(e=>e.post_id.equals(post_id)&& e._id!=id);
         let suma = 0;
          reviews.forEach(e=> {suma = suma + (e.value?e.value:0)})
           suma = suma + value
         await postModel.findOneAndUpdate({_id:post_id}, {rating:suma/reviews.length+1})
-        res.status(200).send(updateReview);
+        res.status(200).json({success:"you updated successfull"});
 
     } catch (error) {
-        res.status(400).send("Cant update this review")
+        res.status(400).json({error:error.message})
     }
 }
 
@@ -62,14 +62,17 @@ const deleteReview = async (req, res) => {
         const {post_id} = await reviewModel.findById(id)
        await reviewModel.deleteOne({_id:id})
        const allReviews =await reviewModel.find({})
-       const reviews = allReviews.filter(e=>e.post_id==post_id);
+       console.log(post_id)
+       console.log(allReviews.map(e=>e.post_id.equals(post_id) ? post_id:0));
+       const reviews = allReviews.filter(e=>e.post_id.equals(post_id));
+       console.log(reviews)
        let suma = 0;
         reviews.forEach(e=>{ suma = suma + (e.value?e.value:0)})
        await postModel.findOneAndUpdate({_id:post_id}, {rating:suma/reviews.length})
-       
-        res.status(200).send("Review deleted")
+
+        res.status(200).json({success:"Review deleted"})
     } catch (error) {
-        res.status(400).send("Failed to delete this review")
+        res.status(400).json({error:error.message})
     }
 }
 
@@ -82,8 +85,17 @@ const getReview = async (req, res) => {
             return res.status(400).send("No searchable id")
         }
         if(mood=="post"){
-            const reviews= await reviewModel.find({}).populate("user_id")
-            const review = reviews.filter(e=>e.post_id==id); 
+            const reviews= await reviewModel.aggregate([
+                {
+                    $lookup: {
+                      from: "reviewreports",
+                      localField: "_id",
+                      foreignField: "review_id",
+                      as: "reports",
+                    },
+                  }])
+                  const reviewsPopulate = await reviewModel.populate(reviews,{path:"user_id"})
+            const review = reviewsPopulate.filter(e=>e.post_id==id); 
             return res.status(200).json(review)
         }
         if(mood==="user"){

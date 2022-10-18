@@ -16,7 +16,7 @@ app.use(cors(/*  {origin: 'http://localhost:3000'}  */));
 
 ///auth0
  
-
+app.use( "/api/webhooks",express.raw({ type: "*/*" }))
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
 app.use(bodyParser.json({ limit: '50mb' }));

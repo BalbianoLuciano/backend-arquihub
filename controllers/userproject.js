@@ -1,4 +1,5 @@
 const { projectModel,usersModel} = require("../models");
+const emailer = require("../config/emailer")
 
 const updateUserProject = async (req, res) => {
   const { id } = req.params;
@@ -19,6 +20,12 @@ const updateUserProject = async (req, res) => {
         { $push: {projects: id } },
         { new: true, useFindAndModify: false }
       );
+
+      const user = await usersModel.findOne({id: id }) || await usersModel.findOne({id:user_id })
+       const addedUser = user.email
+
+      emailer.sendMail(addedUser,`You have been added to a new project!`, `<div><p>${user.name} , You have been added to project ${project.title} <a href = https://arquihub.vercel.app/projectDetail/${id}> link </a></p></div`)
+
     res.status(200).send({success:"user successfully added to the project"});
   } catch (err) {
     res.status(404).send({err: err.message});
@@ -43,6 +50,14 @@ const deleteUserProject = async (req, res) => {
         { $pull: {projects: id } },
         { new: true, useFindAndModify: false }
       );
+
+      const user = await usersModel.findOne({id: id }) || await usersModel.findOne({id:user_id })
+      const addedUser = user.email
+
+     emailer.sendMail(addedUser,`You have been removed from a project!`, `<div><p>${user.name} , You have been removed from the project ${project.title} <a href = https://arquihub.vercel.app/projectDetail/${id}> link </a></p></div`)
+
+
+
     res.status(200).send({success:"user successfully deleted to the project"});
   } catch (err) {
     res.status(404).send({err: err.message});

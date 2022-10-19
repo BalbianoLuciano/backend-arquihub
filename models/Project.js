@@ -15,7 +15,8 @@ const ProjectSchema = new mongoose.Schema(
         default: "public"
     },
     pdf_file: {
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"storages"
     },
     created_by: {
         type: mongoose.Schema.Types.ObjectId,
@@ -26,7 +27,8 @@ const ProjectSchema = new mongoose.Schema(
         ref: "users"
     }],
     project_file:{
-      type: mongoose.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"storages"
     },
 }, {
     timestamps: true

@@ -37,7 +37,7 @@ const postPaymentSubscription = async (req, res) => {
     items: [{plan: "price_1LsHCNAfxOW2aSoAvz1i35DW"}],
     expand: ['latest_invoice.payment_intent', 'customer'],    
   });
-  console.log(subscription)
+  //console.log(subscription)
   const status = subscription['latest_invoice']['payment_intent']['status']
   const client_secret = subscription['latest_invoice']['payment_intent']['client_secret']
 

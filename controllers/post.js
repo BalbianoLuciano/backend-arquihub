@@ -35,7 +35,7 @@ const createPost = async (req, res) => {
         if (!title || !description || !project_type) {
             return res.status(400).send("Missing required parameters")
         }
-
+        console.log(created_by)
         const newPost = {
             title,
             description,
@@ -45,23 +45,33 @@ const createPost = async (req, res) => {
             project_id,
             mts2,
             rooms,
-            image,
+            image:image[0].map(e=>e.url),
             year,
             bathrooms,
             additional_data,
             rating,
         }
-
         const postCreator = await usersModel.findOne({ "id": created_by })
         const creator = postCreator.email
-        const postAuthors = await usersModel.find().where('_id').in(authors).exec();
+        const users = authors.map(e=>e.value) 
+        const postAuthors = await usersModel.find().where('_id').in(users).exec();
         const authorsEmails = postAuthors.map((author) => author.email)
-        const emails = [creator, authorsEmails]
+        const emails = [creator, ...authorsEmails]
 
-        // console.log(newPost)
+         console.log(authorsEmails)
         const createPost = await postModel.create(newPost)
-
+        
         const { id } = createPost;
+
+        await postModel.updateOne({ _id: id },
+            { $push: { authors: created_by } },
+            { new: true, useFindAndModify: false }
+        );
+        await usersModel.updateOne({ _id: created_by },
+            { $push: { posts: id } },
+            { new: true, useFindAndModify: false }
+        );
+
         authors.forEach(async (e) => {
             // console.log(e)
             await postModel.updateOne({ _id: id },

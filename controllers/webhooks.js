@@ -1,7 +1,7 @@
 const { usersModel, paymentModel } = require("../models");
 const Stripe = require("stripe")
 const nodemailer = require("nodemailer");
-const { USER_MAIL, PASS_MAIL, SIGN_SECRET, STRIPE_SECRET_KEY } = process.env;
+const { SIGN_SECRET_PRUEBA, SIGN_SECRET, STRIPE_SECRET_KEY } = process.env;
 const emailer = require("../config/emailer");
 const { postPaymentSubscription } = require("./payment");
 
@@ -12,7 +12,7 @@ const stripe = new Stripe(STRIPE_SECRET_KEY)
 
 const getWebhooks =  async (req, res) => {
   res.status(200).send("ALO")
-  console.log("no llega")
+  console.log("OK")
   
 }
 
@@ -42,9 +42,9 @@ const postWebhooks = async (request, response) => {
       const idSubscriptionStripe = subscription.id
       const newPayment = { idCustomerStripe, idSubscriptionStripe}
 
-      const newPay = await paymentModel.create(newPayment)
+      await paymentModel.create(newPayment)
 
-      console.log(newPay)
+      //console.log(newPay)
       
 
       //const user = await usersModel.findOne({idStrpe:subscription.customer})

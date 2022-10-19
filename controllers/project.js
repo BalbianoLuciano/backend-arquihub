@@ -48,7 +48,7 @@ const createProject = async (req, res) => {
      const mappedUsers = users.map((u)=> u.value)
      const projectAuthors = await usersModel.find().where('_id').in(mappedUsers).exec();
      const authorsEmails = projectAuthors.map((author) => author.email)
-     const emails = [creator, authorsEmails]
+    //  const emails = [creator, authorsEmails]
 
 
     const {_id} = createProject;
@@ -60,19 +60,21 @@ const createProject = async (req, res) => {
       { $push: { projects: _id } },
       { new: true, useFindAndModify: false }
     );
-    await users.forEach(async (e) => {
-      await projectModel.updateOne({_id:_id},
-        { $push: { users: e.value } },
-        { new: true, useFindAndModify: false }
-      );
-      await usersModel.updateOne({_id:e.value},
-        { $push: { projects: _id } },
-        { new: true, useFindAndModify: false }
-      );
-    });
+    // await users.forEach(async (e) => {
+    //   await projectModel.updateOne({_id:_id},
+    //     { $push: { users: e.value } },
+    //     { new: true, useFindAndModify: false }
+    //   );
+    //   await usersModel.updateOne({_id:e.value},
+    //     { $push: { projects: _id } },
+    //     { new: true, useFindAndModify: false }
+    //   );
+    // });
 
     const newProject = await projectModel.findById(_id)
-    emailer.sendMail(emails.flat(1), "Project Created", `<div><p>Project created \n here is your <a href = https://arquihub.vercel.app/projectDetail/${_id}> link </a></p></div`)
+    emailer.sendMail(creator, "Project Created", `<div><p>Project created \n here is your <a href = https://arquihub.vercel.app/projectDetail/${_id}> link </a></p></div`)
+    emailer.sendMail(authorsEmails, `${projectCreator.nickname}, has invited you to project "${title}"`,
+     `<div><p> You have been invited to a new project! \n here is your <a href = https://arquihub.vercel.app/inviteProject/${_id}> link </a></p></div`)
     console.log(newProject);
 
     res.status(200).send(newProject);
@@ -87,12 +89,14 @@ const updateProject = async (req, res) => {
     const { id } = req.params;
     const { 
       description,
-      users
     } = req.body;
     const project = await projectModel.findById(id)
-    console.log(project);
+    // console.log(project);
+    
     await projectModel.findOneAndUpdate(id,    { 
-      $set: {'description':description,'users':[] }
+
+      $set: {'description':description }
+
   });
 
 
@@ -105,13 +109,6 @@ const updateProject = async (req, res) => {
   // const authorsEmails = projectAuthors.map((author) => author.email)
   // const emails = [creator, authorsEmails]
 
-
-     await users.forEach(async (e) => {
-      await projectModel.updateOne({_id:id},
-        { $push: { users: e } },
-        { new: true, useFindAndModify: false }
-      );
-    }); 
     const updatedProject = await projectModel.findById(id)
     // console.log(updatedProject);
     //  emailer.sendMail(emails.flat(1), "Project Updated", `<div><p>Project Updated

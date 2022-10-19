@@ -6,11 +6,14 @@ const updateUserProject = async (req, res) => {
   const { 
     user_id
   } = req.body;
+  console.log("userId",user_id);
+  console.log("projectid", id);
   try {
-    if(!id||!user_id)return res.status(404).send({err:"requiered id of project and user to add"})
+    if(!id||!user_id)return res.status(400).send({err:"requiered id of project and user to add"})
     const project = await projectModel.findOne({_id:id});
     await usersModel.findOne({_id:user_id});
   const userRepeat = project.users.find( e=>  e.equals(user_id))?true:false
+  console.log(userRepeat)
       if(userRepeat)return res.status(404).send({err:"the user to add is repeated"})
       await projectModel.updateOne({_id:id},
         { $push: { users: user_id } },
@@ -20,6 +23,7 @@ const updateUserProject = async (req, res) => {
         { $push: {projects: id } },
         { new: true, useFindAndModify: false }
       );
+
 
       const user = await usersModel.findOne({id: id }) || await usersModel.findOne({id:user_id })
        const addedUser = user.email
@@ -40,6 +44,7 @@ const deleteUserProject = async (req, res) => {
   } = req.body;
   try {
     if(!id||!user_id)return res.status(404).send({err:"requiered id of project and user to delete"})
+    const project = await projectModel.findOne({_id:id});
     await projectModel.findOne({_id:id});
     await usersModel.findOne({_id:user_id});
     await projectModel.updateOne({_id:id},

@@ -94,7 +94,9 @@ const updateProject = async (req, res) => {
     // console.log(project);
     
     await projectModel.findOneAndUpdate(id,    { 
+
       $set: {'description':description }
+
   });
 
 
@@ -106,7 +108,6 @@ const updateProject = async (req, res) => {
   // const projectAuthors = await usersModel.find().where('_id').in(mappedUsers).exec();
   // const authorsEmails = projectAuthors.map((author) => author.email)
   // const emails = [creator, authorsEmails]
-
 
     const updatedProject = await projectModel.findById(id)
     // console.log(updatedProject);

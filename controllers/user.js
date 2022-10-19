@@ -93,15 +93,20 @@ const updateUser = async (req, res) => {
       premium,
       avatar
     };
-    await usersModel.updateOne({_id:id}, editedUser);
-    if(status === "active"){
-      emailer.sendMail(email , `Your account has been reestablished!`, 
-      `${name} Your account is now activated from the ban, welcome back!`)
+
+
+    const user = await usersModel.findById(id)
+    console.log(user.name);
+    if(editedUser.status === "active"){
       await usersModel.updateOne({_id:id}, editedUser);
-      res.status(200).json(editedUser);
+      emailer.sendMail(user.email , `Your account has been reestablished!`, 
+      `Your account is now activated from the ban, welcome back!`)
+      res.send(editedUser);
     }
-    if(status === "banned"){
-      emailer.sendMail(email, "Banned account" , bannedTemplate)
+
+    if(editedUser.status === "banned"){
+      emailer.sendMail(user.email, "Banned account" , bannedTemplate)
+
       await usersModel.updateOne({_id:id}, editedUser);
       res.status(200).json(editedUser);
     }
@@ -109,7 +114,12 @@ const updateUser = async (req, res) => {
       emailer.sendMail(email, name ? `${name}, Welcome to Arquihub!` : `${nickname}, Your account is now inactive`, 
       `${name} Your account is now off, comeback anytime!`)
 
-      return res.status(200).json(editedUser);
+    if(editedUser.status === "inactive"){
+      emailer.sendMail(user.email, editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account is now inactive`, 
+      `${editedUser.name} Your account is now off, comeback anytime!`)
+      await usersModel.updateOne({_id:id}, editedUser);
+      res.send(editedUser);
+
     }
 
 

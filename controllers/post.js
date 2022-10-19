@@ -58,7 +58,7 @@ const createPost = async (req, res) => {
         const authorsEmails = postAuthors.map((author) => author.email)
         const emails = [creator, ...authorsEmails]
 
-        // console.log(newPost)
+         console.log(authorsEmails)
         const createPost = await postModel.create(newPost)
         
         const { id } = createPost;

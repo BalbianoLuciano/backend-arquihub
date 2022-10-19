@@ -121,12 +121,13 @@ const updateUser = async (req, res) => {
       res.send(editedUser);
 
     }
-
+    }
 
   } catch (error) {
     res.status(400).json({error:error.message});
   }
 };
+
 
 const deleteUser = async (req, res) => {
   try {

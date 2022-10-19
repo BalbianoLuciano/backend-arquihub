@@ -1,4 +1,4 @@
-const { usersModel,reviewModel } = require("../models");
+const { usersModel,reviewModel, projectModel } = require("../models");
 const emailer = require("../config/emailer")
 const bannedTemplate = require("../templates/banned")
 
@@ -112,7 +112,7 @@ const updateUser = async (req, res) => {
     }
     if(status === "inactive"){
       emailer.sendMail(email, name ? `${name}, Welcome to Arquihub!` : `${nickname}, Your account is now inactive`, 
-      `${name} Your account is now off, comeback anytime!`)
+      `${name} Your account is now off, comeback anytime!`)}
 
     if(editedUser.status === "inactive"){
       emailer.sendMail(user.email, editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account is now inactive`, 
@@ -121,8 +121,6 @@ const updateUser = async (req, res) => {
       res.send(editedUser);
 
     }
-    }
-
   } catch (error) {
     res.status(400).json({error:error.message});
   }
@@ -145,14 +143,6 @@ const getUser = async (req, res) => {
     const allUsers = await usersModel.aggregate([
       {
         $lookup: {
-          from: "projects",
-          localField: "_id",
-          foreignField: "created_by",
-          as: "projects_created",
-        },
-      },
-      {
-        $lookup: {
           from: "payments",
           localField: "_id",
           foreignField: "user_id",
@@ -170,7 +160,7 @@ const getUser = async (req, res) => {
     ]);
 
     const usersProjects = await usersModel.populate(allUsers, {
-      path: "projects",
+      path: "projects",populate:{path:"pdf_file"}
     });
     const usersPosts = await usersModel.populate(usersProjects, {
       path: "posts",
@@ -182,7 +172,7 @@ const getUser = async (req, res) => {
     const reviews = await reviewModel.find({user_id:getUser._id}).populate("post_id")
     res.status(200).json({...getUser, reviews:reviews});
   } catch (error) {
-    res.status(400).send("Cant get user");
+    res.status(400).send({error:error.message});
   }
 };
 

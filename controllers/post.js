@@ -45,7 +45,7 @@ const createPost = async (req, res) => {
             project_id,
             mts2,
             rooms,
-            image:image[0].map(e=>e.url),
+            image: image ? image[0].map(e=>e.url) : "https://res.cloudinary.com/dfcd64nhm/image/upload/v1664674482/Arquihub/4e36ead625b16bac653d2b07c7a57005_if3usp.png",
             year,
             bathrooms,
             additional_data,

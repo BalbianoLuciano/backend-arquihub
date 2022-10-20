@@ -1,4 +1,4 @@
-const { usersModel,reviewModel } = require("../models");
+const { usersModel,reviewModel, projectModel } = require("../models");
 const emailer = require("../config/emailer")
 const bannedTemplate = require("../templates/banned")
 
@@ -14,6 +14,7 @@ const getUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
+    
     const {
       name,
       lastname,
@@ -29,9 +30,9 @@ const createUser = async (req, res) => {
       location,
       premium
     } = req.body;
+    console.log(name,lastname,nickname,description)
     if (!name || !lastname || !nickname || !email || !password) return res.status(400).send("Missing required parameters");
- 
-    // console.log(name);
+
     const newUser = {
       name,
       lastname,
@@ -47,7 +48,7 @@ const createUser = async (req, res) => {
       location,
       premium:false
     };
-    // console.log(name);
+    
     await usersModel.create(newUser);
     res.status(200).json(newUser);
   } catch (error) {
@@ -75,7 +76,6 @@ const updateUser = async (req, res) => {
       premium,
       avatar
     } = req.body;
-    // console.log(status)
     const editedUser = {
       name,
       lastname,
@@ -94,16 +94,13 @@ const updateUser = async (req, res) => {
       avatar
     };
 
-
     const user = await usersModel.findById(id)
-    console.log(user.name);
     if(editedUser.status === "active"){
       await usersModel.updateOne({_id:id}, editedUser);
       emailer.sendMail(user.email , `Your account has been reestablished!`, 
       `Your account is now activated from the ban, welcome back!`)
-      res.send(editedUser);
+      res.status(200).json(editedUser);
     }
-
     if(editedUser.status === "banned"){
       emailer.sendMail(user.email, "Banned account" , bannedTemplate)
 
@@ -112,17 +109,17 @@ const updateUser = async (req, res) => {
     }
     if(status === "inactive"){
       emailer.sendMail(email, name ? `${name}, Welcome to Arquihub!` : `${nickname}, Your account is now inactive`, 
-      `${name} Your account is now off, comeback anytime!`)
+      `${name} Your account is now off, comeback anytime!`)}
 
     if(editedUser.status === "inactive"){
       emailer.sendMail(user.email, editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account is now inactive`, 
       `${editedUser.name} Your account is now off, comeback anytime!`)
       await usersModel.updateOne({_id:id}, editedUser);
-      res.send(editedUser);
-
+      res.status(200).json(editedUser);
     }
+    await usersModel.updateOne({_id:id}, editedUser);
+    res.status(200).json({_id:user._id});
 
-  }
   } catch (error) {
     res.status(400).json({error:error.message});
   }
@@ -144,14 +141,6 @@ const getUser = async (req, res) => {
     const allUsers = await usersModel.aggregate([
       {
         $lookup: {
-          from: "projects",
-          localField: "_id",
-          foreignField: "created_by",
-          as: "projects_created",
-        },
-      },
-      {
-        $lookup: {
           from: "payments",
           localField: "_id",
           foreignField: "user_id",
@@ -169,7 +158,7 @@ const getUser = async (req, res) => {
     ]);
 
     const usersProjects = await usersModel.populate(allUsers, {
-      path: "projects",
+      path: "projects",populate:{path:"pdf_file"}
     });
     const usersPosts = await usersModel.populate(usersProjects, {
       path: "posts",
@@ -181,7 +170,7 @@ const getUser = async (req, res) => {
     const reviews = await reviewModel.find({user_id:getUser._id}).populate("post_id")
     res.status(200).json({...getUser, reviews:reviews});
   } catch (error) {
-    res.status(400).send("Cant get user");
+    res.status(400).send({error:error.message});
   }
 };
 

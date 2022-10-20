@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const { SIGN_SECRET_PRUEBA, SIGN_SECRET, STRIPE_SECRET_KEY } = process.env;
 const emailer = require("../config/emailer");
 const { postPaymentSubscription } = require("./payment");
+const { subscriptionCycleEnded } = require("../utils/templates/payment")
 
 
 let subscription = "";
@@ -62,7 +63,13 @@ const postWebhooks = async (request, response) => {
       const subscriptionDb = await paymentModel.findOne({idCustomerStripe:subscription.customer})
       subscriptionDb.active = false;
       subscriptionDb.save()
-      
+
+      const userData = await usersModel.findOne({idStrpe:subscription.customer})
+      const emailUser = userData.email
+    
+
+      emailer.sendMail(emailUser, "Subscription Ended", subscriptionCycleEnded)   
+
       response.send("Cancel OK")
                 
         

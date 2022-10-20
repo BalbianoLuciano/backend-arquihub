@@ -39,7 +39,7 @@ const signUp = async (req, res) => {
                 password: await usersModel.encryptPassword(password),
                 type,
                 status,
-                avatar: "https://cdn-icons-png.flaticon.com/512/1946/1946429.png",
+                avatar: "https://res.cloudinary.com/dfcd64nhm/image/upload/v1666218608/avatar_vmuzdl.png",
                 job,
                 description,
                 location,
@@ -90,7 +90,7 @@ const logIn = async (req, res) => {
         const token = sign({ id: findUser._id }, `${SECRET}`, { expiresIn: 86400 })
         const userId = findUser._id
         const userType = findUser.type
-        const userAvatar = "https://cdn-icons-png.flaticon.com/512/1946/1946429.png"
+        const userAvatar = "https://res.cloudinary.com/dfcd64nhm/image/upload/v1666218608/avatar_vmuzdl.png"
         const userMail = findUser.email
         const userName = findUser.name
         const isPremium = findUser.premium

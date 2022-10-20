@@ -30,7 +30,7 @@ const createUpdate = async (req, res) => { //llegan title, description por body
             
             console.log(emails.flat(1));
         await updateModel.create(newUpdate)
-        emailer.sendMail(emails.flat(1), `New changes in ${projectTitle}`, `<div> ${projectTitle} had recent changes, check out  <a href=https://arquihub.vercel.app/projectDetail/${project_id}> here </a> </div>`)
+        emailer.sendMail(collabs, `New changes in ${projectTitle}`, `<div> ${projectTitle} had recent changes, check out  <a href=https://arquihub.vercel.app/projectDetail/${project_id}> here </a> </div>`)
         res.status(200).json(newUpdate)
         }
     } catch (error) {

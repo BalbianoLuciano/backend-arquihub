@@ -42,12 +42,15 @@ const createProject = async (req, res) => {
       visibility
     });
 
-
+    console.log("project",project_file)
+    console.log("pdf",pdf_file)
      const projectCreator = await usersModel.findOne({ "_id": created_by })
      const creator = projectCreator.email
+     console.log(creator)
      const mappedUsers = users.map((u)=> u.value)
      const projectAuthors = await usersModel.find().where('_id').in(mappedUsers).exec();
      const authorsEmails = projectAuthors.map((author) => author.email)
+     console.log(authorsEmails)
     //  const emails = [creator, authorsEmails]
 
 

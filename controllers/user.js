@@ -14,6 +14,7 @@ const getUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
+    
     const {
       name,
       lastname,
@@ -29,9 +30,9 @@ const createUser = async (req, res) => {
       location,
       premium
     } = req.body;
+    console.log(name,lastname,nickname,description)
     if (!name || !lastname || !nickname || !email || !password) return res.status(400).send("Missing required parameters");
- 
-    // console.log(name);
+
     const newUser = {
       name,
       lastname,
@@ -47,7 +48,7 @@ const createUser = async (req, res) => {
       location,
       premium:false
     };
-    // console.log(name);
+    
     await usersModel.create(newUser);
     res.status(200).json(newUser);
   } catch (error) {
@@ -75,7 +76,6 @@ const updateUser = async (req, res) => {
       premium,
       avatar
     } = req.body;
-    // console.log(status)
     const editedUser = {
       name,
       lastname,
@@ -94,16 +94,14 @@ const updateUser = async (req, res) => {
       avatar
     };
 
-
+    console.log(editedUser)
     const user = await usersModel.findById(id)
-    console.log(user.name);
     if(editedUser.status === "active"){
       await usersModel.updateOne({_id:id}, editedUser);
       emailer.sendMail(user.email , `Your account has been reestablished!`, 
       `Your account is now activated from the ban, welcome back!`)
-      res.send(editedUser);
+      res.status(200).json(editedUser);
     }
-
     if(editedUser.status === "banned"){
       emailer.sendMail(user.email, "Banned account" , bannedTemplate)
 
@@ -118,9 +116,9 @@ const updateUser = async (req, res) => {
       emailer.sendMail(user.email, editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account is now inactive`, 
       `${editedUser.name} Your account is now off, comeback anytime!`)
       await usersModel.updateOne({_id:id}, editedUser);
-      res.send(editedUser);
-
+      res.status(200).json(editedUser);
     }
+    await usersModel.updateOne({_id:id}, editedUser);
 
   } catch (error) {
     res.status(400).json({error:error.message});

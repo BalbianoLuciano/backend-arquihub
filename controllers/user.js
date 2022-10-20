@@ -1,7 +1,6 @@
-const { usersModel,reviewModel, projectModel } = require("../models");
-const emailer = require("../config/emailer")
-const bannedTemplate = require("../templates/banned")
-
+const { usersModel, reviewModel, projectModel } = require("../models");
+const emailer = require("../config/emailer");
+const bannedTemplate = require("../templates/banned");
 
 const getUsers = async (req, res) => {
   try {
@@ -14,7 +13,6 @@ const getUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    
     const {
       name,
       lastname,
@@ -26,12 +24,13 @@ const createUser = async (req, res) => {
       status,
       job,
       description,
-      page, 
+      page,
       location,
-      premium
+      premium,
     } = req.body;
-    console.log(name,lastname,nickname,description)
-    if (!name || !lastname || !nickname || !email || !password) return res.status(400).send("Missing required parameters");
+    console.log(name, lastname, nickname, description);
+    if (!name || !lastname || !nickname || !email || !password)
+      return res.status(400).send("Missing required parameters");
 
     const newUser = {
       name,
@@ -44,15 +43,15 @@ const createUser = async (req, res) => {
       status,
       job,
       description,
-      page, 
+      page,
       location,
-      premium:false
+      premium: false,
     };
-    
+
     await usersModel.create(newUser);
     res.status(200).json(newUser);
   } catch (error) {
-    res.status(400).json({error:error.message});
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -71,10 +70,10 @@ const updateUser = async (req, res) => {
       status,
       job,
       description,
-      page, 
+      page,
       location,
       premium,
-      avatar
+      avatar,
     } = req.body;
     const editedUser = {
       name,
@@ -88,40 +87,45 @@ const updateUser = async (req, res) => {
       status,
       job,
       description,
-      page, 
+      page,
       location,
       premium,
-      avatar
+      avatar,
     };
 
-    const user = await usersModel.findById(id)
-    if(editedUser.status === "active"){
-      await usersModel.updateOne({_id:id}, editedUser);
-      emailer.sendMail(user.email , `Your account has been reestablished!`, 
-      `Your account is now activated from the ban, welcome back!`)
+    const user = await usersModel.findById(id);
+    // if(status === "inactive"){
+    //   emailer.sendMail(user.email, name ? `${name}, Welcome to Arquihub!` : `${nickname}, Your account is now inactive`,
+    //   `${name} Your account is now off, comeback anytime!`)}
+    if (editedUser.status === "active") {
+      await usersModel.updateOne({ _id: id }, editedUser);
+      emailer.sendMail(
+        user.email,
+        `Your account has been reestablished!`,
+        `Your account is now activated from the ban, welcome back!`
+      );
       res.status(200).json(editedUser);
-    }
-    if(editedUser.status === "banned"){
-      emailer.sendMail(user.email, "Banned account" , bannedTemplate)
+    } else if (editedUser.status === "banned") {
+      emailer.sendMail(user.email, "Banned account", bannedTemplate);
 
-      await usersModel.updateOne({_id:id}, editedUser);
+      await usersModel.updateOne({ _id: id }, editedUser);
       res.status(200).json(editedUser);
-    }
-    if(status === "inactive"){
-      emailer.sendMail(email, name ? `${name}, Welcome to Arquihub!` : `${nickname}, Your account is now inactive`, 
-      `${name} Your account is now off, comeback anytime!`)}
-
-    if(editedUser.status === "inactive"){
-      emailer.sendMail(user.email, editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account is now inactive`, 
-      `${editedUser.name} Your account is now off, comeback anytime!`)
-      await usersModel.updateOne({_id:id}, editedUser);
+    } else if (editedUser.status === "inactive") {
+      emailer.sendMail(
+        user.email,
+        editedUser.name
+          ? `${editedUser.name}, Welcome to Arquihub!`
+          : `${newUser.nickname}, Your account is now inactive`,
+        `${editedUser.name} Your account is now off, comeback anytime!`
+      );
+      await usersModel.updateOne({ _id: id }, editedUser);
       res.status(200).json(editedUser);
+    } else {
+      await usersModel.updateOne({ _id: id }, editedUser);
+      return res.status(200).json({ _id: user._id });
     }
-    await usersModel.updateOne({_id:id}, editedUser);
-    res.status(200).json({_id:user._id});
-
   } catch (error) {
-    res.status(400).json({error:error.message});
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -158,7 +162,8 @@ const getUser = async (req, res) => {
     ]);
 
     const usersProjects = await usersModel.populate(allUsers, {
-      path: "projects",populate:{path:"pdf_file"}
+      path: "projects",
+      populate: { path: "pdf_file" },
     });
     const usersPosts = await usersModel.populate(usersProjects, {
       path: "posts",
@@ -167,10 +172,12 @@ const getUser = async (req, res) => {
       path: "favourites",
     });
     const getUser = usersFavourites.find((e) => e._id == id);
-    const reviews = await reviewModel.find({user_id:getUser._id}).populate("post_id")
-    res.status(200).json({...getUser, reviews:reviews});
+    const reviews = await reviewModel
+      .find({ user_id: getUser._id })
+      .populate("post_id");
+    res.status(200).json({ ...getUser, reviews: reviews });
   } catch (error) {
-    res.status(400).send({error:error.message});
+    res.status(400).send({ error: error.message });
   }
 };
 

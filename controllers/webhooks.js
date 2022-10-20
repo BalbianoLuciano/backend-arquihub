@@ -64,6 +64,10 @@ const postWebhooks = async (request, response) => {
       subscriptionDb.active = false;
       subscriptionDb.save()
 
+      const userData = await usersModel.findOne({idStrpe:subscription.customer})
+      const emailUser = userData.email
+    
+
       emailer.sendMail(emailUser, "Subscription Ended", subscriptionCycleEnded)   
 
       response.send("Cancel OK")

@@ -32,7 +32,7 @@ const createProject = async (req, res) => {
       pdf_file,
       visibility
     } = req.body;
-
+    
     const createProject = await projectModel.create({
       title,
       description,
@@ -41,6 +41,7 @@ const createProject = async (req, res) => {
       pdf_file,
       visibility
     });
+    const {_id} = createProject;
 
     console.log("project",project_file)
     console.log("pdf",pdf_file)
@@ -59,7 +60,6 @@ const createProject = async (req, res) => {
     //  const emails = [creator, authorsEmails]
 
 
-    const {_id} = createProject;
     await projectModel.updateOne({_id:_id},
       { $push: { users: created_by } },
       { new: true, useFindAndModify: false }

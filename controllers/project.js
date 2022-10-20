@@ -42,12 +42,20 @@ const createProject = async (req, res) => {
       visibility
     });
 
-
+    console.log("project",project_file)
+    console.log("pdf",pdf_file)
      const projectCreator = await usersModel.findOne({ "_id": created_by })
      const creator = projectCreator.email
-     const mappedUsers = users.map((u)=> u.value)
-     const projectAuthors = await usersModel.find().where('_id').in(mappedUsers).exec();
-     const authorsEmails = projectAuthors.map((author) => author.email)
+     console.log(creator)
+     if(users.length){
+      const mappedUsers = users.map((u)=> u.value)
+      const projectAuthors = await usersModel.find().where('_id').in(mappedUsers).exec();
+      const authorsEmails = projectAuthors.map((author) => author.email)
+
+      emailer.sendMail(authorsEmails, `${projectCreator.nickname}, has invited you to project "${title}"`,
+      `<div><p> You have been invited to a new project! \n here is your <a href = https://arquihub.vercel.app/inviteProject/${_id}> link </a></p></div`)
+     }
+
     //  const emails = [creator, authorsEmails]
 
 
@@ -73,9 +81,6 @@ const createProject = async (req, res) => {
 
     const newProject = await projectModel.findById(_id)
     emailer.sendMail(creator, "Project Created", `<div><p>Project created \n here is your <a href = https://arquihub.vercel.app/projectDetail/${_id}> link </a></p></div`)
-    emailer.sendMail(authorsEmails, `${projectCreator.nickname}, has invited you to project "${title}"`,
-     `<div><p> You have been invited to a new project! \n here is your <a href = https://arquihub.vercel.app/inviteProject/${_id}> link </a></p></div`)
-    console.log(newProject);
 
     res.status(200).send(newProject);
   } catch (error) {

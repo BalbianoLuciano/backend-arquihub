@@ -14,22 +14,18 @@ const createTrans=()=>{
     }
 
 
-const sendMail = async(email, subject, html)=>{
-    const transporter = createTrans()
-    const info = await transporter.sendMail({
-        from:"'Arquihub' <arquihub06@gmail.com >",
-        to: `${email}`,
-        subject,
-        html,
-        
-        // attachments:[{
-        //     file:"url.txt",
-        //     path:"https://arquihub-git-main-frann24.vercel.app/"
-        // }]
-    })
-    console.log("Message sent ", info.messageId)
-
-    return
-}
+    const sendMail = async(email, subject, html)=>{
+        const transporter = createTrans()
+        const info = await transporter.sendMail({
+            from:"'Arquihub' <arquihub6@gmail.com >",
+            to: `${email}`,
+            subject,
+            html,
+            
+        })
+        console.log("Message sent ", info.messageId)
+    
+        return
+    }
 
 exports.sendMail=(email, subject, html)=> sendMail(email, subject, html)

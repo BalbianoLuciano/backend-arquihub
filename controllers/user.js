@@ -94,7 +94,6 @@ const updateUser = async (req, res) => {
       avatar
     };
 
-    console.log(editedUser)
     const user = await usersModel.findById(id)
     if(editedUser.status === "active"){
       await usersModel.updateOne({_id:id}, editedUser);
@@ -119,6 +118,7 @@ const updateUser = async (req, res) => {
       res.status(200).json(editedUser);
     }
     await usersModel.updateOne({_id:id}, editedUser);
+    res.status(200).json({_id:user._id});
 
   } catch (error) {
     res.status(400).json({error:error.message});

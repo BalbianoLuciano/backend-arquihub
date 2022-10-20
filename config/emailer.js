@@ -17,7 +17,7 @@ const createTrans=()=>{
 const sendMail = async(email, subject, html)=>{
     const transporter = createTrans()
     const info = await transporter.sendMail({
-        from:"'Arquihub' <arquihub06@gmail.com >",
+        from:"'Arquihub' <arquihub6@gmail.com >",
         to: `${email}`,
         subject,
         html,

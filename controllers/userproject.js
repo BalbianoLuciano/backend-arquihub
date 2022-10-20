@@ -28,7 +28,10 @@ const updateUserProject = async (req, res) => {
       const user = await usersModel.findOne({id: id }) || await usersModel.findOne({id:user_id })
        const addedUser = user.email
 
-      emailer.sendMail(addedUser,`You have been added to a new project!`, `<div><p>${user.name} , You have been added to project ${project.title} <a href = https://arquihub.vercel.app/projectDetail/${id}> link </a></p></div`)
+      emailer.sendMail(addedUser,`You have been Invited to a project!`, `<div><p>${user.name} 
+      You have been invited to project ${project.title} as a collaborator. You may accept or decline the invitation. Follow this <a href = https://arquihub.vercel.app/projectDetail/${id}> link </a> to respond.
+      If you don’t take action you will not be added as a collaborator. </p></div`)
+
 
     res.status(200).send({success:"user successfully added to the project"});
   } catch (err) {

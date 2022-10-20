@@ -2,7 +2,7 @@ const { usersModel } = require("../models");
 const Stripe = require("stripe");
 const nodemailer = require("nodemailer");
 const emailer = require("../config/emailer");
-const {payAccepted, subscriptionEnded} = require("../utils/templates/payment")
+const {payAccepted, subscriptionCancel } = require("../utils/templates/payment")
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY) 
 
@@ -20,7 +20,7 @@ const cancelSubscription = async (req, res) => {
    
     const subscriptionId = await stripe.subscriptions.update(stripeCustomer.subscriptions.data[0].id, {cancel_at_period_end: true})
 
-    emailer.sendMail(emailUser, "Subscription Cancel", subscriptionEnded)
+    emailer.sendMail(emailUser, "Subscription Cancel", subscriptionCancel)
     
     //console.log(subscriptionId)
 

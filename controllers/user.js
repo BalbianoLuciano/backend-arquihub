@@ -99,13 +99,13 @@ const updateUser = async (req, res) => {
       await usersModel.updateOne({_id:id}, editedUser);
       emailer.sendMail(user.email , `Your account has been reestablished!`, 
       `Your account is now activated from the ban, welcome back!`)
-      res.status(200).json(editedUser);
+      return res.status(200).json(editedUser);
     }
     if(editedUser.status === "banned"){
       emailer.sendMail(user.email, "Banned account" , bannedTemplate)
 
       await usersModel.updateOne({_id:id}, editedUser);
-      res.status(200).json(editedUser);
+      return res.status(200).json(editedUser);
     }
     if(status === "inactive"){
       emailer.sendMail(email, name ? `${name}, Welcome to Arquihub!` : `${nickname}, Your account is now inactive`, 
@@ -115,10 +115,10 @@ const updateUser = async (req, res) => {
       emailer.sendMail(user.email, editedUser.name ? `${editedUser.name}, Welcome to Arquihub!` : `${newUser.nickname}, Your account is now inactive`, 
       `${editedUser.name} Your account is now off, comeback anytime!`)
       await usersModel.updateOne({_id:id}, editedUser);
-      res.status(200).json(editedUser);
+      return res.status(200).json(editedUser);
     }
     await usersModel.updateOne({_id:id}, editedUser);
-    res.status(200).json({_id:user._id});
+    return res.status(200).json({_id:user._id});
 
   } catch (error) {
     res.status(400).json({error:error.message});

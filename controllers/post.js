@@ -35,6 +35,7 @@ const createPost = async (req, res) => {
         if (!title || !description || !project_type) {
             return res.status(400).send("Missing required parameters")
         }
+        console.log(image);
         const newPost = {
             title,
             description,
@@ -44,7 +45,7 @@ const createPost = async (req, res) => {
             project_id,
             mts2,
             rooms,
-            image: image ? image[0].map(e=>e.url) : "https://res.cloudinary.com/dfcd64nhm/image/upload/v1664674482/Arquihub/4e36ead625b16bac653d2b07c7a57005_if3usp.png",
+            image: image ? image.map(e=>e.url) : "https://res.cloudinary.com/dfcd64nhm/image/upload/v1664674482/Arquihub/4e36ead625b16bac653d2b07c7a57005_if3usp.png",
             year,
             bathrooms,
             additional_data,
